@@ -1,0 +1,14 @@
+﻿	nav ul.friendconnect li{
+		display:inline-block;
+		height:auto;
+		margin:0;
+		padding:2px;
+	}
+		nav ul.friendconnect li img{
+			width:50px;
+			height:50px;
+		}
+	nav ul.friendconnect li:hover{
+		z-index:1;
+	}
+
