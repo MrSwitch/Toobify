@@ -543,10 +543,12 @@ var toob = {
 		},
 		'nav mouseup' : function(e){
 			toob.mouseDown = toob.prevEvent = toob.resizeControl = null;
-			// save menu position
-			store.save();
 			
-			$('ul',this).trigger('updatelist');
+			// save menu position asyuncronously
+			setTimeout(function(){
+				store.save();
+				$('ul',this).trigger('updatelist');
+			},100);
 		},
 		'nav resize'  : function(){
 			if($('div.main').width()===0){

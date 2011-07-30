@@ -3,7 +3,10 @@
 <head>
 <link href="static/favicon.ico" rel="SHORTCUT ICON" />
 <title>Toobify{{ title }}</title>
-<meta http-equiv="x-ua-compatible" content="IE=9" />
+
+<!-- use the latest IE browser always, and optionally use chrome frame if installed -->
+<meta http-equiv="x-ua-compatible" content="IE=edge,chrome=1" />
+
 <meta name="keywords" content="{{ keywords }}" />
 <meta name="description" content="{{ desc }}" />
 <meta name="image_src" content="{{ img }}" />
@@ -12,12 +15,17 @@
 <meta name="application-name" content="Toobify" />
 <meta name="msapplication-starturl" content="http://toobify.com/" />
 
-<link href="msgr/style.css" rel="stylesheet" />
-<link href="inc/social.css" rel="stylesheet" />
+<!-- Make App discoverable -->
+<meta name="search.app" content="WindowsLive"/>
+
+<!--[if lt IE 9]>
+	<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+
+<link href="connect/connect.css" rel="stylesheet" />
 <link href="toob/style.css" rel="stylesheet" />
-<link href="gfc/style.css" rel="stylesheet" />
 <script>var gt = (new Date).getTime();</script>
-<script src="inc/html5shiv.js"></script>
+
 <!--
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
 <script type="text/javascript" src="jquery.js"></script>
@@ -39,11 +47,11 @@
 <script src="inc/util.js" ></script>
 <script src="http://ajax.googleapis.com/ajax/libs/swfobject/2.1/swfobject.js"></script>
 <script src="toob/script.js" ></script>
-<script src="http://www.google.com/friendconnect/script/friendconnect.js?key=notsupplied&v=0.8"></script> 
-<script src="gfc/script.js" ></script>
-<script src="msgr/script.js" ></script>
 <script src="inc/share.js" ></script>
-<script src="inc/fb.js" ></script>
+<script src="connect/connect.js" ></script>
+<script src="connect/fb.js" ></script>
+<script src="connect/gc.js" ></script>
+<script src="connect/mc.js" ></script>
 <script src="notify/notify.js" ></script>
 
 <script>

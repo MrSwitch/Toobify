@@ -1,16 +1,6 @@
 <?php
 
 /**
- * If the current location http://www.toobify.com?
- * Remove the www. prefix
- */
-if(strpos( $_SERVER['HTTP_HOST'], 'www.')===0){
-	header('Location: '. str_replace('www.', '', "http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']));
-	exit;
-}
-	
-
-/**
  * If the user has submitted a querystring we shoud go and get the details. 
  * And then reload the page immediatly using javascript if they happen to hit this page
  */
@@ -51,7 +41,7 @@ $r = file_get_contents("template/toobify.htm");
  * Sniff the browser
  * Add application cache for the following browsers
  */
-if(preg_match("#(webkit|opera)#i",$_SERVER['HTTP_USER_AGENT'])){
+if(!strpos($_SERVER['HTTP_HOST'],".local")&&preg_match("#(webkit|opera)#i",$_SERVER['HTTP_USER_AGENT'])){
 	$files = files('./');	// ARRAY OF FILES IN CURRENT AND NESTED DIRECTORIES
 	$m = 0;					// LATEST MODIFICATION TIME 
 	

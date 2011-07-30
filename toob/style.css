@@ -596,13 +596,11 @@ div.main{
 
 /* Modal */
 .modal{
-	width:50%;
-	max-height:75%;
-	margin-top:0;
-	margin-left:0;
 	left:25%;
 	top:25%;
-	position:fixed;
+	right:25%;
+	bottom:25%;
+	position:absolute;
 	z-index:10001;
 	background:#333;
 	border-radius:10px;
