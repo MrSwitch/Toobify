@@ -4,7 +4,7 @@
  * If the user has submitted a querystring we shoud go and get the details. 
  * And then reload the page immediatly using javascript if they happen to hit this page
  */
-$r = file_get_contents("index.htm");
+$r = file_get_contents("index.html");
 
 
 if(!empty($_GET['id'])){
