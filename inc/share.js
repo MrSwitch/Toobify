@@ -2,9 +2,12 @@
 
 (function($){
 	function share(title, link){
-		return $('<button data-href="http://www.google.com/buzz/post?url={$url}&message={$message}&imageurl={$image}" data-dimension="700x450">\
+		/*
+		<button data-href="http://www.google.com/buzz/post?url={$url}&message={$message}&imageurl={$image}" data-dimension="700x450">\
 				<img src="http://code.google.com/apis/buzz/images/google-buzz-16x16.png"> Buzz\
-			</button><button data-href="http://profile.live.com/badge?url={$url}&title={$message}&screenshot={$image}" data-dimension="900x500">\
+			</button>
+			*/
+		return $('<button data-href="http://profile.live.com/badge?url={$url}&title={$message}&screenshot={$image}" data-dimension="900x500">\
 				<img src="http://img.wlxrs.com/$Live.SN.MessengerBadge/icon16wh.png" /> Messenger\
 			</button><button data-href="http://twitter.com/share?url={$url}&text={$message}+%5B{$id}%5D" data-dimension="550x300">\
 				<img src="http://twitter.com/favicon.ico" /> Twitter\

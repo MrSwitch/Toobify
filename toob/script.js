@@ -146,7 +146,7 @@ var toob = {
 		// RESIZE
 		//if(!store.margins){
 		//}
-		store.margins = {Left:"35%"};
+		store.margins = {Left:"35%", Right:"0"};
 
 		/* Override form submit, jQuery bug with IE8, see also e.preventDefault()
 	    $('form').each( function() {

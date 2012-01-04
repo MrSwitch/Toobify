@@ -104,6 +104,7 @@ function log() {
  * MODAL
  *************************************************/
 (function($){
+
 	// Open up a modal window
 	$.modal = function(title,content){
 		// Do the modal items exist?
@@ -133,12 +134,15 @@ function log() {
 				.end();
 	
 
+		
+		/**
 		$m.filter('.modal').hide().fadeIn('fast').animate({
 			width : "90%",
 			left : "5%",
 			height : "90%",
 			top : "5%"
 		},'fast');
+		*/
 	};
 })(jQuery);
 
