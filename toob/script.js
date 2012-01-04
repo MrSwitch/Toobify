@@ -579,7 +579,7 @@ var toob = {
 				.css({zIndex:0})
 		},	
 */
-		'nav ul.thumbs updatelist'	: function(){
+		'nav ul updatelist'	: function(){
 			// SHOWS IMAGES WHEN THEY ARE REQUIRED
 			$(this)
 				.each(function(){

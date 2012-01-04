@@ -321,6 +321,7 @@ nav.left{
 					display:inline-block;
 					width:24px;
 					vertical-align:middle;
+					margin-right:3px;
 				}
 
 		nav ul li:hover {
