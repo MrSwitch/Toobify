@@ -316,9 +316,11 @@ nav.left{
 			nav ul li a:visited {
 				color:darkgray;
 			}
-				/* images hidded by default */
+				/* images small by default */
 				nav ul li a img{
-					display:none;
+					display:inline-block;
+					width:24px;
+					vertical-align:middle;
 				}
 
 		nav ul li:hover {
@@ -596,11 +598,13 @@ div.main{
 
 /* Modal */
 .modal{
+	width:50%;
+	max-height:75%;
+	margin-top:0;
+	margin-left:0;
 	left:25%;
 	top:25%;
-	right:25%;
-	bottom:25%;
-	position:absolute;
+	position:fixed;
 	z-index:10001;
 	background:#333;
 	border-radius:10px;
