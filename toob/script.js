@@ -212,7 +212,8 @@ var toob = {
 			$(this)
 				.parent('ol')
 				.nextAll('[data-id='+$(this).attr('data-id')+']')
-				.addClass('selected');
+				.addClass('selected')
+				.trigger('updatelist');
 			
 			try{
 				$('nav > form[data-id='+$(this).attr('data-id')+'] input').get(0).focus();
