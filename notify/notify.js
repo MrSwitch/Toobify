@@ -12,7 +12,7 @@ if (("external" in window)&&
 	
 	// Add site button
 	if(!window.external.msIsSiteMode()){
-		$('<div><button title="This adds thumbnail controls to IE9" class="msPinSite">Pin Start</button></div>')
+		$('<button title="This adds thumbnail controls to IE9" class="msPinSite">Pin Start</button>')
 			.appendTo('header div.tools')
 			.find('button')
 			.click(function(){
@@ -99,7 +99,7 @@ else
 // WEBKIT
 if("webkitNotifications" in window){
 	// Browser supports it :)
-	$('<div><button>Remote</button></div>')
+	$('<button>Remote</button>')
 		.appendTo('header div.tools')
 		.find('button')
 		.click(function(){
