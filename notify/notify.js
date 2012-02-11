@@ -101,15 +101,22 @@ if("webkitNotifications" in window){
 	// Browser supports it :)
 	$('<button>Remote</button>')
 		.appendTo('header div.tools')
-		.find('button')
 		.click(function(){
-			window.webkitNotifications.requestPermission(function(){
-				if(window.webkitNotifications.checkPermission() != 0) return; 
+			var notify = function(){
 				window
 					.webkitNotifications
 					.createHTMLNotification('./notify.htm')
 					.show();
-	        });
+			}
+			if(window.webkitNotifications.checkPermission() != 0){
+				window.webkitNotifications.requestPermission(function(){
+					if(window.webkitNotifications.checkPermission() != 0) return; 
+					notify();
+				});
+			}
+			else{
+				notify();
+			}
 		});
 
 	// Add script which passes the messages back and forth
