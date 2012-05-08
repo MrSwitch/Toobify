@@ -155,13 +155,18 @@ function log() {
 
 jQuery.live = function(o){
 	// Bind all events listeners to this Widget
+	// Attach controls.
 	var x,m;
-	for( x in o ){if(o.hasOwnProperty(x)){
-		m = x.match(/(.* )?([a-z]+)$/);
-		$(m[1]||window)[m[1]?'live':'bind'](m[2], o[x]);
-	}}
-};
+	for( x in o ){
+		m = x.match(/(.* )?([a-z\,]+)$/i);
+		if(m[2]==='scroll'&&!m[1]){
+			$(m[1]||window).scroll(o[x]);
+		}
+		else 
+			$(m[1]||window)[m[1]?'live':'bind'](m[2].replace(',',' '), o[x]);
+	}
 
+};
 
 
 // Store client side data helper.
