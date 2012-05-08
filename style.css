@@ -1,4 +1,8 @@
-﻿/* CSS FOR YOUTUBE WIDGET */
+﻿*{
+	box-sizing:border-box;
+}
+
+/* CSS FOR YOUTUBE WIDGET */
 header, nav, footer{
 	display:block;
 }
@@ -8,7 +12,7 @@ body{
 	padding:0;
 	width:100%;
 	min-height:100%;
-	background:black;
+	background:#1b1b1b;
 	font-family:'Molengo', Arial, Helvetica, sans-serif;
 	color:white;
 	position:fixed;
@@ -52,11 +56,18 @@ header{
 		-webkit-border-image: -webkit-gradient(linear, left top, left bottom, from(rgba(0,0,0,0.8)), to(rgba(0,0,0,.2))) 100% 100% 100% 100%;
 		cursor:pointer;
 	}
-	h1{
+	header h1{
 		padding:5px 10px;
 		font-size:inherit;
-		display:inline-block;
+		display:block;
+		position:absolute;
+		top:0;
+		left:70px;
+		right:180px;
 		margin:0;
+		overflow:hidden;
+		text-overflow:ellipsis;
+		white-space: nowrap;
 	}
 
 h1,h2,h3{
@@ -138,84 +149,31 @@ div.tools{
 			position:absolute;
 		}
 
+
+section{
+	position:absolute;
+	top:27px;
+	bottom:0;
+	overflow:hidden;
+}
+	section > *{
+		position:absolute;
+		overflow:hidden;
+	}
+
 nav{
+	position:absolute;
+	overflow:hidden;
 	height:100%;
-	position:fixed;
 	background:#1b1b1b;
-	outline:1px solid black;
 	top:0;
+	bottom:0;
 	width:300px;
 	text-align:center;
 	overflow:hidden;
+	min-width:100px;
 }
-nav.left{
-	left:0; /* IE7 FIX */
-	width:100%;
-}
-	nav ol{
-		margin:0;
-		margin-left:20px;
-		text-align:left;
-		padding:0;
-	}
-	@media screen and (-webkit-min-device-pixel-ratio:0) {
-		nav ol { margin-bottom:-2px; }
-	}
-	nav ol:first-child{
-		margin-top:45px;
-	}
-		nav ol li{
-			display:inline-block;
-			background-color:transparent;
-			margin:0;
-			margin-left:-10px;
-			margin-bottom:-1px;
-			padding-left:10px;
-			padding-right:5px;
-			position:relative;
-			border-bottom:20px solid #242424;
-			border-left:5px solid transparent;
-			border-right:20px solid transparent;
-			/*border-left:1px solid #000*/;
-			height:0;
-			line-height:20px;
-			cursor:pointer;
-			color:#555;
-			z-index:1;
-			text-align:center;
-		}
-		nav ol li:hover{
-			color:#555;
-			border-bottom-color:#2b2b2b;
-		}
-		nav ol li.selected{
-			z-index:2;
-			color:#666;
-			border-bottom-color:#333;
-			margin-bottom:-2px;
-		}
-		nav ol li.selected:hover{
-			color:#666;
-		}
- 		nav ol li.add{
- 			border-bottom:17px solid #161616;
- 			padding-right:3px;
- 			padding-left:6px;
- 			z-index:0;
- 			font-weight:bold;
- 			font-size:16px;
- 			margin-bottom:0;
- 			line-height:1em;
- 		}
-	 		nav ol li span.remove{
-	 			background-color:#141414;
-				margin-left: 2px;
-				margin-right: -19px;
-				line-height:1em;
-			}
-
 	nav > form{
-		display:none;
 		/*border:1px solid black;
 		border-bottom:none;
 		*/width:auto;
@@ -223,46 +181,37 @@ nav.left{
 		padding-top:4px;
 		margin-bottom:-1px;
 		position:relative;
-		background-color:#333;
-		-moz-box-shadow: 2px 0 3px black;
-		-webkit-box-shadow: 2px 0 3px black;
-		box-shadow: 2px 0 3px black;
-	}
-	nav form.selected{
-		display:block;
+		height:30px;
 	}
 		nav form input{
+			position: absolute;
 			background-color:#636365;
 			border:1px solid black;
 			color:white;
 			height:22px;
-			margin:3px 0;
+			margin:0;
+			bottom:3px;
 			padding:0 2px;
-			width:80%;
+			left:3px;
+			right:40px;
 			-webkit-appearance:none;
 			-moz-appearance:none;
 		}
 		nav form button{
-			width:10%;
-			margin-left:2px;
+			width: 35px;
+			position: absolute;
+			right: 3px;
+			bottom: 1px;
 		}
 
-	nav > .selected{
-		display:block;
-		border-top:1px solid #444;
-	}
-	nav > form.selected + .selected{
-		margin-top:2px;
-	}
 	nav > ul{
+		border-top:1px solid #444;
 		-moz-box-shadow: 2px 0 3px black;
 		-webkit-box-shadow: 2px 0 3px black;
 		box-shadow: 2px 0 3px black;
 
-		display:none;
 		text-align:left;
 		/*border:1px solid black;*/
-		height:37%;
 		width:auto;
 		color:white;
 		/*-webkit-transition: 0.3s linear;*/
@@ -282,6 +231,13 @@ nav.left{
 		-webkit-background-size: 100% 200px;
 		background-position:bottom;
 		background-repeat:no-repeat;
+
+		display: block;
+		bottom: 0;
+		position: absolute;
+		top: 0;
+		right: 0;
+		left: 0;
 	}
 		nav ul li {
 			margin:0 -10px;
@@ -318,9 +274,11 @@ nav.left{
 		}
 			nav ul li:hover a {
 			}
+
 		nav ul li.selected{
+
 		}
-		nav ul li.selected,
+			nav ul li.selected,
 			nav ul li.selected a,nav ul li.selected:hover a{
 				color:gold;
 			}
@@ -379,32 +337,18 @@ nav.left{
 	/**
 	 * Change view controls
 	 */
-	nav ul div.control{
-		float:right;
-		margin-top:-13px;
-		margin-right:30px;
-		height:10px;
-	}
 	
-	/* WEBKIT: this fixes the controls - does not scroll */
-	@media screen and (-webkit-min-device-pixel-ratio:0){
-		nav ul div.control{
-			float:none;
-			right:0%;
-			position:absolute;
-		}
-	}
 
-		nav ul div.control button{
-			font-size:0.8em;
-			padding-top:0;
-			padding-bottom:0;
-		}
+	nav div.control{
+		text-align: right;
+		padding: 0 10px;
+		padding-top: 5px
+	}
 
 		/**
 		 * Thumb view
 		 */
-		nav ul.thumbs li{
+		nav.thumbs ul li{
 		/*
 			-moz-box-shadow: 2px 2px 5px black inset;
 			-webkit-box-shadow: 2px 2px 5px black inset;
@@ -434,23 +378,23 @@ nav.left{
 			background-repeat:no-repeat;
 			*/
 		}
-			nav ul.thumbs li:nth-child(even){
+			nav.thumbs ul li:nth-child(even){
 				background-color:#2e2e2e;
 				background-color:rbga(0,0,0,0.1);
 			}
-			nav ul.thumbs li:hover{
+			nav.thumbs ul li:hover{
 				background-color:#232323;
 			}
-			nav ul.thumbs li.selected{
+			nav.thumbs ul li.selected{
 				-webkit-box-shadow: black 2px 2px 10px;
 				-moz-box-shadow: black 2px 2px 10px;
 				box-shadow: black 2px 2px 10px;
 				background-color: #2B2B2B !;
 			}
-				nav ul.thumbs li a{
+				nav.thumbs ul li a{
 					white-space:normal;
 				}
-					nav ul.thumbs li a img{
+					nav.thumbs ul li a img{
 						clear:both;
 						margin:0 auto;
 						display:block;
@@ -465,55 +409,16 @@ nav.left{
 					}
 
 
-	nav button.resize{
-		position:relative;
-		border:none;
-		margin:0;
-		padding:0;
-		background:#333;
-		opacity:0.4;
-		filter:alpha(opacity=40);
-		border:1px dotted #666;
-	}
-		nav button.rh{
-			width:20%;
-			top:-10px;
-			margin-bottom:-4px;
-			height:3px;
-			position:relative;
-			cursor:n-resize;
-		}
-		nav button.lv,
-		nav button.rv{
-			height:10%;
-			position:absolute;
-			top:45%;
-			right:3px;
-			width:3px;
-			padding:0;
-			cursor:e-resize;
-		}
-		nav button.lv{
-			right:auto;
-			left:3px;
-		}
-		nav button.resize:focus{
-			background-color:white;
-		}
-
-
 /**
  * Main Content
  * FLASH PLAYER
  */ 
-div.main{
+article{
 	margin-bottom:0;
 	margin-top:35px;
-	margin-left:100%;
 	padding:10px;
 	width:auto;
 	height:100%;
-	overflow:auto;
 }
 	#player, #fplayer{
 		width:100%;
@@ -568,22 +473,6 @@ div.main{
 }
 
 
-/** LOADING */
-.loading{
-	 margin-left:48%;
-	 margin-top:20%;
-	 padding:0 10px;
-	 border:5px solid #1b1b1b;
-	 display:inline;
-	 background-color:#222;
-	 position:fixed;
-	 -moz-border-radius:10px;
-	 -webkit-border-radius:10px;
-}
-.toobwidget .loading{
-	display:none;
-}
-
 /* Modal */
 .modal{
 	width:50%;
@@ -635,3 +524,39 @@ iframe.modal-bg{
 	opacity:0;
 	filter:alpha(opacity=0);
 }
+
+
+/**
+ * Unique Column
+ */
+ 	nav:empty:after,
+ 	nav ul:empty:after{
+ 		content:'Loading...';
+ 		font-size:3em;
+ 		color:white;
+	}
+	#player:empty{
+		text-align:center;
+	}
+ 	#player:empty:after{
+ 		content:"No content - yet";
+ 		font-size:3em;
+ 		position:absolute;
+ 		top:45%;
+ 		left:0;
+ 		right:0;
+ 		bottom:0;
+ 		color:rgba(255,255,255,0.1);
+ 		text-align:center;
+	}
+	nav > ul{
+		top:40px;
+	}
+
+	nav.results > ul{
+		display:none;
+	}
+	nav.results > ul.selected{
+		z-index:1;
+		display:block;
+	}

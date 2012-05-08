@@ -152,6 +152,7 @@ function log() {
  * @param object { "selector event" => function, ...} 
  * @return
  */
+
 jQuery.live = function(o){
 	// Bind all events listeners to this Widget
 	var x,m;
@@ -168,6 +169,7 @@ var store = {};
 if(localStorage&&localStorage.json&&typeof(JSON) !== 'undefined'){
 	store = JSON.parse( localStorage.json );
 }
+
 store.save = function(n,o){
 	if(n){
 		store[n] = o;
