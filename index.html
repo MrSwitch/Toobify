@@ -1,8 +1,11 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
 	<title>Toobify</title>
 	<link href="static/favicon.ico" rel="SHORTCUT ICON" />
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/> 
+
 
 	<!-- use the latest IE browser always, and optionally use chrome frame if installed -->
 	<meta http-equiv="x-ua-compatible" content="IE=edge,chrome=1" />
@@ -26,11 +29,10 @@
 	<!--	
 	<link href="connect/connect.css" rel="stylesheet" />
 	-->
-	<link href="toob/style.css" rel="stylesheet" />
 	
 	<script>
 //<![CDATA[
-		var local = ( /local/.test(window.location.host) ? 0 : 1);
+		var local = ( /^local\./.test(window.location.host) ? 0 : 1);
 		function loadScript(a){
 			for(var i=0,s;i<a.length;i++){
 				if(a[i].match(/.css$/)){
@@ -42,10 +44,11 @@
 				document.write(s);
 			}
 		}
-		loadScript([['/jquery.share.js/jquery.share.css','http://mrswitch.github.com/jquery.share.js/jquery.share.css'][local]]);
+		loadScript([['/$.share.js/jquery.share.css','http://mrswitch.github.com/jquery.share.js/jquery.share.css'][local],
+		['../workspace.js/workspace.css','http://mrswitch.github.com/workspace.js/workspace.css'][local]]);
 //]]>
 	</script>
-
+	<link href="toob/style.css" rel="stylesheet" />
 
 	<link href="" rel="stylesheet" />
 	<script>var gt = (new Date).getTime();</script>
@@ -56,32 +59,42 @@
 	-->
 </head>
 <body>
-	<div class="loading">Loading</div>
 	<header>
 		<div class="logo">Toobify</div>
 		<h1></h1>
 		<div class="tools"></div>
 	</header>
-	<nav class="left"></nav>
-	<div class="main">
-		<div id="player"></div>
-	</div>
-<script src="inc/jquery.js"></script>
-<script src="inc/util.js" ></script>
-<script src="http://ajax.googleapis.com/ajax/libs/swfobject/2.1/swfobject.js"></script>
-<script src="toob/script.js" ></script>
+	<section class="frameset inline">
+		<nav class="search" style="width:33.3%;" data-framename="Query">
+			<form class="search" action="#whoops">
+				<input type="search" placeholder="Search"/>
+				<button title="Search YouTube">&#9658;</button>
+			</form>
+			<ul></ul>
+		</nav>
+		<nav class="results" style="width:33.3%;" data-framename="Search">
+			<div class="control"><button class="workspace-back" style="float:left;">Back</button><button data-toggle="thumbs" class="view">Thumbs</button><button class="share">Share</button></div>
+		</nav>
+		<article style="width:33.3%;">
+			<div id="player"></div>
+		</article>
+	</section>
+
 
 <script>
-	loadScript([['/jquery.share.js/jquery.share.js','http://mrswitch.github.com/jquery.share.js/jquery.share.js'][local]]);
+		loadScript([['/_packages/jquery.js','http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'][local]]);
 </script>
+
+<script src="inc/util.js" ></script>
+<script src="http://ajax.googleapis.com/ajax/libs/swfobject/2.1/swfobject.js"></script>
+
+<script>
+	loadScript([['/$.share.js/jquery.share.js','http://mrswitch.github.com/jquery.share.js/jquery.share.js'][local],
+				['../workspace.js/workspace.js','http://mrswitch.github.com/workspace.js/workspace.js'][local]
+			]);
+</script>
+<script src="nav.js" ></script>
 <script src="inc/share.js" ></script>
-<!--
-	<nav class="right"></nav>
-<script src="connect/connect.js" ></script>
-<script src="connect/fb.js" ></script>
-<script src="connect/gc.js" ></script>
-<script src="connect/mc.js" ></script>
--->
 <script src="notify/notify.js" ></script>
 
 <script>

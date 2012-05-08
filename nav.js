@@ -1,9 +1,8 @@
-﻿// Javascript file for embedding a youttube player in the site and adding controls.
+// Javascript file for embedding a youttube player in the site and adding controls.
 // Author Andrew Dodson
 //  action="javascript:$(this).trigger(\'submit\');void(0);"
 var toob = {
 	appname: 'Toobify:',
-	mousedown : false,
 	tabs_length : 0,
 	lastSearchCount : false,
 	images : [], // list of all loaded images, this is used when the onload event fails to fire if an image already exists;
@@ -12,14 +11,7 @@ var toob = {
 
 	init : function(){
 		$('body').addClass('toobwidget');
-		$('nav.left').html('\
-			<ol class="searches"><li class="add" title="Start a new search tab">+</li><\/ol>\
-			<button class="rh resize"></button>\
-			<ol class="playlists" data-placeholder="Drag items here to start list"><li class="add" title="Create a new Playlist">+</li><\/ol>\
-			<button class="rv resize"></button>');
 
-		$('nav.right').append('<ol><\/ol><button class="lv resize"><\/button>');
-		
 
 		// Play History
 		if(!store.playlist || !("push" in store.playlist) )
@@ -35,82 +27,15 @@ var toob = {
 		if(!store.played || "push" in store.played )
 			store.played = {};
 
-		if(!store.tabs){
+		if(!store.tabs || store.tabs.length === 0){
 //		if(true){
 			store.tabs = [
 				{
-					title : "PLAYLIST",
-					list : (store.playlists ? toob.getIds(store.playlists.PLAYLIST) : null),
-					type : 1 // playlist
-				},{
-					title : "SEARCH YOUTUBE",
-					type : 0 // search
-				},{
 					title : "@toobify",
 					type : 0 // search
 				}
 			];
-
-			// PLAYLISTS
-			if(!store.playlists){
-				// Add the default playlist
-			} else {
-				if(!store.playlisttitles){
-					store.playlisttitles = {};
-				}
-	
-				for( var x in store.playlists ){ if(store.playlists.hasOwnProperty(x)){
-	
-					if( $(store.tabs).filter(function(i,o){
-						
-						return o.title === x && o.type === 1;
-					}).length === 0 ){
-						store.tabs.push({
-							title	: store.playlisttitles[x]||'PLAYLIST',
-							list	: toob.getIds(store.playlists[x]),
-							type	: 1	// playlist
-						});
-					}
-				}}
-			}
-			$(store.searches).each(function(i,s){
-				if( $(store.tabs).filter(function(i,o){
-					return o.title === s;
-				}).length === 0 ){
-					store.tabs.push({
-						title	: s,
-						type	: 0
-					});
-				}
-			});
-			store.save();
 		}
-		
-		// TABS
-		var $ol = [
-			$('nav.left ol.searches'),
-			$('nav.left ol.playlists')
-		];
-
-		$(store.tabs).each(function(i,o){
-			if(!o) return;
-			var ul = toob.tab(o.title, $ol[o.type],null,o.info,true);
-			if(!o.list){
-				// Run the search and populate the tab
-				toob.search(o.title, ul);
-			} else {
-				var s= '';
-				$(o.list).each(function(i,x){
-					var p = channel(x);
-					s += toob.item(p.id||x,p.title,true);
-				});
-				$(ul).append(s);
-			}
-		});
-
-		for(var i in $ol)
-			if($ol[i].find('li:not(.add)').length===0)
-				toob.tab("NEW TAB",$ol[i]);
 
 		// Attach controls.
 		var x,m;
@@ -123,43 +48,58 @@ var toob = {
 				$(m[1]||window)[m[1]?'live':'bind'](m[2].replace(',',' '), toob.EVENTS[x]);
 		}
 
+
+		// TABS
+		var $ol = $('nav.search ul');
+		
+		store.tabs.reverse();
+
+		$(store.tabs).each(function(i,o){
+			if(!o) return;
+			var ul = toob.tab(o.title,$ol,null,o.info,true);
+			if(!o.list){
+				// Run the search and populate the tab
+				$(ul).trigger('search');
+			} else {
+				var s= '';
+				$(o.list).each(function(i,x){
+					var p = channel(x);
+					s += toob.item(p.id||x,p.title,true);
+				});
+				$(ul).append(s);
+			}
+		});
+
+
+
 		// trigger click
-		$('nav ol').each(function(){
-			var id = $('li:not(.add):first', this)
+		var id = $('nav.search ul li:not(.add):first')
 						.trigger('click')
 						.attr('data-id');
-			$('nav.left > ul[data-id='+id+'] div button.view').trigger('click');
-		});
+		// Button view
+		$('nav > ul[data-id='+id+'] div button.view').trigger('click');
+		
+		// remove all 'active' state from the frames
+		$('nav .active').removeClass('active');
+		
 
 
 	    // Has the user passed in a query?
 	    if(channel().q){
 	    	// Create a new tab with the search results
-			var ul = toob.tab(channel().label || channel().q, $ol[0] ,null,null,true ), 
+			var ul = toob.tab(channel().label || channel().q, $ol,null,null,true ), 
 				q = channel().q || channel().label;
 
 			toob.search(q.replace(/\|/g,' | '), ul);
 			var id = $(ul).attr('data-id');
-			$('nav.left > ul[data-id='+id+'] div button.view, nav.left > ol li[data-id='+id+']').trigger('click');
+			$('nav.results > ul[data-id='+id+'] div button.view, nav.search li[data-id='+id+']').trigger('click');
 	    }
-		
-		// RESIZE
-		//if(!store.margins){
-		//}
-		store.margins = {Left:"35%", Right:"0"};
 
-		/* Override form submit, jQuery bug with IE8, see also e.preventDefault()
-	    $('form').each( function() {
-	        this.submit = function(e){ e.preventDefault();$(this).trigger("submit");};
-	    });
-	    */
+		// Trigger resize
+		$(window).trigger('hashchange').trigger('resize');
 		
-		$(window).trigger('hashchange').trigger('resize');		
 		
 	},
-	
-	prevEvent : null,
-	mouseDown : null,
 
 	EVENTS : {
 		/* MAIN VIDEO CONTROL */
@@ -167,12 +107,13 @@ var toob = {
 			// Has the video changed?
 			// Apply all the features to the video if this has not already been done
 			// this gets triggered when we get a hasnchange event on the page
-			var w = store.margins.Left;
-			if(!toob.player()){
-				w = ((1-($('nav.right').width()/$(window).width()))*100)+'%';
+			if(toob.player()){
+				// Add active class
+				$('article').addClass('active').siblings().removeClass('active')
 			}
-			$('nav.left').animate({width : w});
-			$('div.main').animate({marginLeft: w});
+			else{
+				$('.frame:first').addClass('active').siblings().removeClass('active');
+			}
 		},
 		/* REMOTE */ 
 		// Called from remote window, browser control
@@ -202,31 +143,24 @@ var toob = {
 		/**
 		 * Tab switcher
 		 */
-		'nav ol li:not(.add) click' : function(){
-			if( $(this).hasClass('selected') ) return;
-
-			$(this).addClass('selected').siblings('.selected').removeClass('selected').each(function(){
-				$('nav > [data-id='+$(this).attr('data-id')+']').removeClass('selected');
-			});
-
-			$(this)
-				.parent('ol')
-				.nextAll('[data-id='+$(this).attr('data-id')+']')
+		'nav.search ul li:not(.add) click' : function(){
+			$('nav.results ul[data-id='+ $(this).attr('data-id') +']')
+				.add(this)
 				.addClass('selected')
-				.trigger('updatelist');
-			
-			try{
-				$('nav > form[data-id='+$(this).attr('data-id')+'] input').get(0).focus();
-			}catch(e){}
+				.trigger('updatelist')
+				.siblings('.selected')
+				.removeClass('selected');
+
+			$(this).parents('.frame').next('.frame').addClass('active').siblings().removeClass('active');
 		},
 		'header .logo click' : function(){
 			change("/");
 		},
 		// Edit Tabs
-		'nav ol li:not(.add) selectstart' : function(){
+		'nav.search ul li:not(.add) selectstart' : function(){
 			return false;
 		},
-		'nav.left ol li:not(.add) dblclick' : function(){
+		'nav.search ul li:not(.add) dblclick' : function(){
 			var t = prompt("What do you want to call this tab?", $(this).text().replace(/X$/,'') );
 			
 			if( !t || t.length==0 ) return;
@@ -235,11 +169,7 @@ var toob = {
 			return false;
 		},
 
-		'nav ol li.add click' : function(){
-			toob.tab("NEW TAB", $(this).parent() );
-		},
-
-		'nav ol li span.remove click' : function(){
+		'nav.search ul li span.remove click' : function(){
 			var $li = $(this).parent('li'),
 				i = $li.attr('data-id');
 
@@ -255,16 +185,12 @@ var toob = {
 		'savetabs' : function(){
 			var a=[];
 			// loop through all the tabs and build up the tab list
-			$('nav.left ol').each(function(){
-				var type = ($(this).hasClass('searches')?0:1);
-				$('li:not(.add)', this).each(function(){
-					var id = parseInt($(this).attr('data-id'));
-					a.push({
-						title	: $(this).attr('data-label'),
-						list	: toob.getIds($('nav.left ul[data-id='+id+']')),
-						type	: type,
-						info	: ($('nav ul[data-id=' + id + '] > i').html())
-					});
+			$('nav.search ul li').each(function(){
+				var id = parseInt($(this).attr('data-id'));
+				a.push({
+					title	: $(this).attr('data-label'),
+					list	: toob.getIds($('nav.results ul[data-id='+id+']')),
+					info	: ($('nav ul[data-id=' + id + '] > i').html())
 				});
 			});
 			store.tabs = a;
@@ -273,83 +199,104 @@ var toob = {
 		/**
 		 * Searching
 		 */
-		'nav.left > form submit' : function(){
-			try{
-				var s = $('input', this).val() || $(this).attr( "data-label" ),
-					i = $(this).attr( "data-id" ),
-					l = $(this).attr( "data-label" ),
-					$u = $('nav ul[data-id='+ i +']');
-					
-				if(s==='NEW TAB')
-					s='';
+		'nav.search form submit' : function(e){
 
-				if($u.length===0)
-					return;
+			e.preventDefault();
 
-				toob.tab(s, $(this).prevAll('ol').get(0), i );
+			var s = $('input', this).val();
 
-				// for pagination
-				if(s!==l){
-					// add star results to the list
-					$u.find('li,.placeholder').remove();
-					if(s)store.queries.push(s);
-				}
-				// search
-				toob.search(s,$u);
-			}catch(e){
-				log("Errr this bad, search failed");
-			}
+			var $ul = toob.tab(s, $('nav.search ul').get(0));
 
+			// for pagination
+			if(s)store.queries.push(s);
+
+			// search
+			$($ul).trigger('search');
+
+			// Add active class
+			$(this).parents('.frame').next('.frame').addClass('active').siblings().removeClass('active')
+			
 			return false;
 		},
 		// because the scroll event cannot be attached via "live" we have a hack
-		'nav.left ul mouseenter' : function(e){
+		'nav.results ul mouseenter' : function(e){
 			if(!$(this).attr("data-scroll")){
-				$(this).scroll(toob.EVENTS['nav.left ul scroll']);
+				$(this).scroll(toob.EVENTS['nav.results ul scroll']);
 				$(this).attr("data-scroll",true);
 			}
 		},
-		'nav.left ul scroll' : function(e){
+		'nav.results ul search' : function(){
+
+			if($(this).hasClass('loading')){
+				// do not do anything else
+				return;
+			};
+
+			// Add Loading
+			var $ul = $(this).addClass('loading');
+
+			// search
+			toob.search($(this).attr('data-label'), $(this).find("li").length, function(r){
+
+				$ul.removeClass('loading');
+				
+				var s='';
+
+				$(r.data).each(function(i,o){
+					s += toob.item(o.id,o.title,true);
+				});
+
+				$ul.append(s).trigger('updatelist');
+
+				$(window).trigger('savetabs');
+			});
+	
+		},
+		'nav button.order click' : function(){
+			var $ul= $('ul:visible', this);
+				li = $ul.find('li').detach().sort(function(a,b){
+					return $(a).text()>$(b).text();
+				});
+			$ul.append(li);
+		},
+		'nav.results ul scroll' : function(e){
 			// Load images
 			$(this).trigger('updatelist');
 
 			// HIT THE BOTTOM
-			if( e.target.scrollHeight <= (e.target.scrollTop + e.target.offsetHeight)){
-				$('nav form[data-id='+$(this).attr('data-id')+']').submit();
+			if( e.target.scrollHeight <= (e.target.scrollTop + e.target.offsetHeight)+5){
+				$(this).trigger('search');
 			}
-		},
-		'nav.left ul div.placeholder input change' : function(){
-			// Prepend the current form input
-			$(this).parents('ul.selected').prev("form.selected").find('input').val($(this).val()).get(0).focus();
 		},
 		/**
 		 * Double Click starts playing defines the item as selected
 		 */
-		'nav.left ul li a click'	: function(){
+		'nav.results ul li a click'	: function(){
 			// Remove any selected video
 			toob.anchorplaying = this;
 
-			$('nav.left ul li.selected').removeClass('selected');
+			$('nav.results ul li.selected').removeClass('selected');
 			
 			// Change HASH
 			change($(this).attr('href'));
 			
 			return false;
 		},
-		'nav.left ul li a dblclick'	: function(){
+		'nav.results ul li a dblclick'	: function(){
 			toob.anchorplaying = this;
 			$(this).parent().addClass('selected');
 		},
-		'nav.left ul li span.remove click'	: function(){
+		'nav.results ul li span.remove click'	: function(e){
+			e.stopPropagation();
+			e.preventDefault();
 			$(this).parent().remove();
 			$(window).trigger('savetabs');
 		},
-
-		'nav.left ul li span.add click' : function(){
+		'nav.results ul li span.add click' : function(){
 			var $li = $(this).parent(),
 				p = channel($li.find('a').attr('href'));
 			// Get the current playlist
-			$ul = $('nav.left ol.playlists').nextAll('ul.selected:eq(0)').each(function(){
+			$ul = $('nav.search ul li.playlists').each(function(){
 				$(this).append(toob.item(p.id,p.title,true));
 			}).trigger('updatelist');
 
@@ -358,7 +305,7 @@ var toob = {
 
 			$(window).trigger('savetabs');
 		},
-		
+
 		/**
 		 * Drag and Drop
 		 */
@@ -453,150 +400,46 @@ var toob = {
 		/**
 		 * Switch list views
 		 */
-		"nav ul div button.view click"	: function(){
+		"nav div.control button.view click"	: function(){
 			// change the view
 			var action = ($(this).hasClass('active') ? 'remove' : 'add');
-			$(this)[action+'Class']('active').parents('ul')[action+'Class']($(this).attr('data-toggle'));
+			$(this)[action+'Class']('active').parents('nav')[action+'Class']($(this).attr('data-toggle'));
 
 			// loop through all the items in the list and load the images into the placehlders
-			$(this).parents('ul').trigger('updatelist');
+			$(this).parents('nav').find('.selected').trigger('updatelist');
 		},
 		
 		/**
 		 * Share the playlist
 		 */
-		"nav ul div button.share click"	: function(){
-			var a=[],$ul=$(this).parents("ul"),label=$ul.attr('data-label');
-			$(toob.getIds($(this).parents("ul"))).each(function(k,v){
+		"nav div.control button.share click"	: function(){
+			var a=[],
+				$ul=$(this).parents("nav").find('ul.selected'),
+				label=$ul.attr('data-label');
+
+			$(toob.getIds($ul)).each(function(k,v){
 				try{ a.push(v.match(/id=([^\&]+)/)[1]) }
 				catch(e){}
 			});
+
 			$(window).trigger('share', [label, "#label="+label+"&q="+ a.join('|')] );
 		},
-		/**
-		 * Resize
-		 */
-		'nav button selectstart' : function(){
-			return false;
-		},
-		'nav selectstart' : function(){
-			return false;
-		},
-		'nav > button.rh mousedown' : function(e){
-			toob.mouseDown = {prev:[],next:[]};
-			$(this).prevUntil('button.resize').filter('ul').each(function(){
-				toob.mouseDown.prev.push($(this).height());
-			});
-			$(this).nextUntil('button.resize').filter('ul').each(function(){
-				toob.mouseDown.next.push($(this).height());
-			});
-			toob.prevEvent = e || window.event;
-			toob.resizeControl = this;
-		},
-		'nav > button.lv, nav > button.rv mousedown' : function(e){
-			toob.mouseDown = $(this).parent('nav').width();
-			toob.prevEvent = e || window.event;
-			toob.resizeControl = this;
-		},
-		'nav > button.lv, nav > button.rv dblclick' : function(e){
-			var w = ($(this).parent('nav').width() <= 10 ? 300 : 10) +'px';
-			$(this).parent('nav').css({width : w}).trigger("resize");
-			if($(this).hasClass('rv')){
-				var o = {marginLeft : w}
-				store.margins.Left = w;
-			}else{ 
-				var o = {marginRight : w}
-			}
-			$('div.main').css(o);
-		},
-		'body mousemove' : function(e){
-			e = e || window.event;
-			if(!toob.mouseDown) return;
-			var $parent = $(toob.resizeControl).parent('nav');
-			
-
-			if(typeof(toob.mouseDown) === 'object'){
-
-				if(((toob.mouseDown.prev[0] - (toob.prevEvent.pageY - e.pageY))<20)||((toob.mouseDown.next[0] + (toob.prevEvent.pageY - e.pageY))<20)) return;
-
-				$(toob.resizeControl).prevUntil('button.resize').filter('ul').each(function(i){
-					$(this).height( (100*(toob.mouseDown.prev[i] - (toob.prevEvent.pageY - e.pageY))/$parent.height())+'%' );
-				});
-				$(toob.resizeControl).nextUntil('button.resize').filter('ul').each(function(i){
-					$(this).height( (100*(toob.mouseDown.next[i] + (toob.prevEvent.pageY - e.pageY))/$parent.height())+'%' );
-				});
-
-			} else {
-				var o, w;
-				if( $(toob.resizeControl).hasClass('rv') ){
-					w = (toob.mouseDown - (toob.prevEvent.pageX - e.pageX)) + 'px';
-					o = {marginLeft : w};
-					store.margins.Left = w;
-				}else {
-					w = (toob.mouseDown + (toob.prevEvent.pageX - e.pageX)) + 'px';
-					o = {marginRight : w};	
-				}
-				$parent.css({width : w});
-				$('div.main').css(o);
-			}
-			$parent.trigger('resize');
-			
-		},
-		'nav mouseup' : function(e){
-			toob.mouseDown = toob.prevEvent = toob.resizeControl = null;
-			
-			// save menu position asyuncronously
-			setTimeout(function(){
-				store.save();
-				$('ul',this).trigger('updatelist');
-			},100);
-		},
-		'nav resize'  : function(){
-			if($('div.main').width()===0){
-				var w = Math.max($('body').width()-$(this).width(),10)+'px';
-				$(this)
-					.siblings('nav')
-					.width(w);
-				
-				var o;
-				if($(this).prevAll('nav').length){
-					o = {marginLeft:w};
-				}
-				else {
-					o = {marginRight:w};
-				}
-				$('div.main').css(o);
-			}
-		},
-		'resize'	: function(){
-		    // POSITION
-			$('nav.left ol:eq(1)').nextAll('ul').height(((20/screen.height)*100)+'%');
-			$('nav.left ol:eq(0)').nextUntil('ol').filter('ul').height((100*($(window).height()-(175+$('nav.left ol:eq(0)').height()))/$(window).height())+'%');
-		},
-/**		'nav click'	: function(){
-			$(this)
-				.css({zIndex:1})
-				.siblings('nav')
-				.css({zIndex:0})
-		},	
-*/
 		'nav ul updatelist'	: function(){
 			// SHOWS IMAGES WHEN THEY ARE REQUIRED
 			$(this)
 				.each(function(){
-					var h = $(this).height(),t,o=$(this).position().top;
+					var h = $(this).height(),t;
 					$('li',this).each(function(){
-						t = $(this).position().top - o; 
+						t = $(this).position().top; 
 						if(t>0&&t<(h+$(this).height())){
 							$('img:not([src])',this).each(function(){
-								var id= $(this).attr('data-id');
-								var s = "http://i.ytimg.com/vi/"+id+'/default.jpg';
-								this.src = s;
-								// Have we allready loaded this image into the browser?
-						    	if( $.inArray(id,toob.images) > -1 ){
+								this.src = $(this).attr('data-src');
+								$(this).removeAttr('data-src');
+								// Have we already loaded this image into the browser?
+						    	if( $.inArray(this.src,toob.images) > -1 ){
 							    	$(this).animate({opacity:1},'fast');
 						    	} else {
-						    		$(this).load( function(){$(this).animate({opacity:1},'fast');toob.images.push(id);} );
+						    		$(this).load( function(){$(this).animate({opacity:1},'fast');toob.images.push(this.src);} );
 						    	}
 							});
 						}
@@ -607,8 +450,11 @@ var toob = {
 	player : function(){
 	
 		var p =  channel();
+		
+		console.log(p);
+
 		if(!p||!p.id){
-			$('div.main').html('<div id="player"></div>');
+			$('article').html('<div id="player"></div>');
 			return false;
 		} 
 
@@ -618,12 +464,12 @@ var toob = {
 			$('meta[name=image_src]').attr('content',json['entry']['media$group']['media$thumbnail'][0]['url']);
 		});
 
-		if($('#fplayer').length===0){
-			swfobject.embedSWF('http://www.youtube.com/v/'+ p.id +'?color1=0x000000&color2=0x000000&enablejsapi=1&playerapiid=ytplayer', "player", "100%", "90%", "9", null, 
+		if(!document.getElementById('fplayer')){
+			swfobject.embedSWF('http://www.youtube.com/v/'+ p.id +'?color1=0x000000&color2=0x000000&version=3&enablejsapi=1&playerapiid=ytplayer', "player", "100%", "100%", "9", null, 
 			{}, { allowScriptAccess: "always", bgcolor: "#cccccc" }, { id: "fplayer" });
 			toob.fplayer = document.getElementById('fplayer');
 
-		} else if( p.id !== document.getElementById('fplayer').getVideoUrl().match(/\?v=([^&]+)/)[1] ){
+		} else if( p.id !== document.getElementById('fplayer').getVideoUrl().match(/[\?\&]v=([^&]+)/)[1] ){
 			document.getElementById('fplayer').loadVideoById(p.id);
 		}
 		else{
@@ -638,25 +484,13 @@ var toob = {
 	
 		// Store a list of video title references for general use.
 		store.videos[p.id] = p.title;
-		
-		$('nav.left ul[data-label^=PLAYED:]').each(function(){
-			if( $(this).find('li a[href*="'+p.id+'"]').length===0){
-				var t= toob.item(p.id,p.title, true ),
-					$t = $(this).find('li:first');
-				if($t.length===0)
-					$(this).append(t);
-				else 
-					$t.before(t);
-				$(this).trigger('updatelist');
-			}
-		});
 
 		$(window).trigger('savetabs');
 		return true;
 	},
 	tab		: function(t, ol, id, info){
-		var h = $(ol).nextAll('ul').height(),
-			i = (parseInt(id) >= 0 ? parseInt(id) : this.tabs_length ),
+
+		var i = (parseInt(id) >= 0 ? parseInt(id) : this.tabs_length ),
 			c = (t?t.toUpperCase().replace(/[^A-Z0-9\_]+/ig,''):null);
 		
 		this.tabs_length++;
@@ -667,21 +501,13 @@ var toob = {
 		// Add tab
 		$li = $('li[data-id='+id+']', ol);
 		if($li.length===0){
-			$li = $('<li></li>').appendTo(ol);
+			$li = $('<li></li>').prependTo(ol);
 		};
 
 		$ul = $('ul[data-id='+id+']', $(ol).parent() );
 		if($ul.length===0){
-			$ul = $('<ul ondragenter="cancelEvent()" ondragover="cancelEvent()" ondrop="toob.EVENTS[\'nav ul drop\'](this)"></ul>').insertAfter(ol);
+			$ul = $('<ul ondragenter="cancelEvent()" ondragover="cancelEvent()" ondrop="toob.EVENTS[\'nav ul drop\'](this)"></ul>').appendTo($('nav.results'));
 		};
-
-		$fm = $('form[data-id='+id+']', $(ol).parent() );
-		if($fm.length === 0 && $(ol).hasClass('searches')){		// Does this search have a form?
-			$fm = $('<form  class="search" action="#whoops"><input type="search" placeholder="'+t+'"/><button title="Search YouTube">&#9658;</button></form>').insertAfter(ol);
-		}
-
-		if(!id)
-			$ul.append('<div class="control"><button data-toggle="thumbs" class="view">Thumbs</button><button class="share">Share</button></div>');
 
 		if($(ol).hasClass('searches')&&t==="NEW TAB"){
 			$ul.append(
@@ -699,28 +525,28 @@ var toob = {
 
 		
 		$ul.attr( "data-id", i ).attr( "data-label", t );
-		$fm.attr( "data-id", i ).attr( "data-label", t );
 		$li.attr( "data-id", i ).attr( "data-label", t ).attr( "title", "Click to select, Double click to change label" ).html(t.replace(/ /g,'&nbsp;')+'<span class="remove">X</span>').trigger('click');
 		
-		if(h) $ul.height(h+'px');
 		return $ul;
 	},
-	search	: function(s,ul,i){
-		// Get the start
-		if(!i)i=$("li",ul).length;
+	search	: function(s,i,callback){
+	
+		var data = [];
 
 		// Special searches
-		if(s==='SEARCH YOUTUBE')
-			s='';
-		else if( s.match(/^PLAYED\s*\:/) ){
+		if( s.match(/^PLAYED\s*\:/) ){
 			// Search through the played list
 			for(var i=0,x,s='',a=store.playlist.reverse();i<a.length;i++){
 				if(x===a[i]) continue; // dont put two identical items next to one another
 				x = a[i];
-				s += toob.item( x, store.videos[x] );
+				
+				data.push({
+					id : x, 
+					title : store.videos[x] 
+				});
 			}
+			callback({data:data});
 
-			$(ul).append(s);
 			return;
 		} else if( s.match(/^PLAYLIST:/) ){
 			// This is a search for playlists with the title
@@ -733,22 +559,25 @@ var toob = {
 			if(i<100&&i>0) return;
 			// This is a twitter search
 			$.getJSON('http://api.twitter.com/1/statuses/user_timeline.json?screen_name='+s.replace(/@/,'')+'&count=100&include_rts=true&clientsource=CUSTOM&callback=?', function(json){
-				if( !$.isArray(json) )
-					return;
-				s ='<i>video tweets from <a href="http://twitter.com/'+s.replace(/@/,'')+'" target=_blank >'+s+'</a></i>';
-				for( var x in json ){
-					if(!json[x].text) continue;
-					var m = json[x].text.match(/\|\s*(.*?)\s*\[(.*?)\]/i);
-					if(!m) m = json[x].text.match(/(.*?)\s*\[(.*?)\]/i);
-					if(!m) continue;
-					s += toob.item(m[2],m[1],true);
-				}
-				$(ul).append(s).trigger('updatelist');
-				$(window).trigger('savetabs');
+
+				$.each( json, function(i,o){
+					if(!o.text) return;
+					var m = o.text.match(/\|\s*(.*?)\s*\[(.*?)\]/i);
+					if(!m) m = o.text.match(/(.*?)\s*\[(.*?)\]/i);
+					if(!m) return;
+
+					data.push({
+						id : m[2],
+						title : m[1]
+					});
+				});
+				
+				callback({data:data});
+
 			});
 			return false;
 		}
-		
+
 		var p = channel();
 
 		if(s){
@@ -760,15 +589,17 @@ var toob = {
 		}
 
 		$.getJSON( 'http://gdata.youtube.com/feeds/api/' + s + '&alt=json-in-script&max-results=50&start-index='+(i||1)+'&callback=?', function(json){
-			var s = '';
-			for(var x in json.feed.entry){if(json.feed.entry.hasOwnProperty(x)){
-				//if(typeof( json.feed.entry[x]['app$control'] ) === 'object') continue; // this video is restricted... its better not to show them i feel.
-				s += toob.item( json.feed.entry[x].id['$t'].match(/video:([^:]+)/)[1], json.feed.entry[x].title['$t'], true );
-			}};
 
-			// Overwrite / Append the results
-			$(ul).append(s).trigger('updatelist');
-			$(window).trigger('savetabs');
+			$.each( json.feed.entry, function(i,o){
+				//if(typeof( json.feed.entry[x]['app$control'] ) === 'object') continue; // this video is restricted... its better not to show them i feel.
+				data.push({
+					title : o.title['$t'],
+					id :  o.id['$t'].match(/video:([^:]+)/)[1],
+					image_src : ''
+				});
+
+			});
+			callback({data:data});
 		});
 	},
 	/**
@@ -781,7 +612,7 @@ var toob = {
 		toob.move('prev',force);
 	},
 	move	: function (move,force){
-		var href = $('nav.left ul li.selected')
+		var href = $('nav.results ul li.selected')
 						.removeClass('selected')
 						[move]()
 						.find('a')
@@ -814,8 +645,8 @@ var toob = {
 		log('newstate: '+(['ended','playing','paused','buffering','','video cued'][state] || 'uncertain/unstarted'));
 		var id = (toob.fplayer=document.getElementById('fplayer')).getVideoUrl().match(/\?v=([^&]+)/)[1];
 		// if the new state has changed, and it is the current item playing
-		var href = $('nav.left ul li.selected a').attr('href');
-		if( state === 0 && ( href && (channel(href).id === channel().id) ) && $('nav.left li.selected').next().length ){
+		var href = $('nav.results ul li.selected a').attr('href');
+		if( state === 0 && ( href && (channel(href).id === channel().id) ) && $('nav.results li.selected').next().length ){
 			// then play the next one
 			toob.next();
 			return;
@@ -823,7 +654,7 @@ var toob = {
 		else if ( state === 3 && (id !== channel().id) ){
 			// The user has changed the video and it is no longer the same as our data.
 			$.getJSON('http://gdata.youtube.com/feeds/api/videos/'+id+'?v=2&alt=json-in-script&callback=?', function(json){
-				$('nav.left ul li.selected').removeClass('selected');
+				$('nav.results ul li.selected').removeClass('selected');
 				change({
 					id : id,
 					title : json.entry.title['$t']
@@ -846,8 +677,8 @@ var toob = {
 			state	: toob.fplayer.getPlayerState(),
 			title	: channel().title,
 			play	: channel(channel()),
-			next	: $('nav.left li.selected').next().find('a').attr('href'),
-			prev	: $('nav.left li.selected').prev().find('a').attr('href')
+			next	: $('nav.results ul li.selected').next().find('a').attr('href'),
+			prev	: $('nav.results ul li.selected').prev().find('a').attr('href')
 		}]);
 	},
 
@@ -866,7 +697,7 @@ var toob = {
 		
 		// Create a list item with an anchor including an image tag which is initally empty.
 		// When the user switches between views then we size the image. And insert its value where we can
-		return '<li>'+(editable?'<span class="remove" title="Remove">X</span>':'')+'<span class="add" title="Add to current playlist">&#43;</span><a href="'+link+'" draggable=true ondragend="toob.EVENTS[\'nav ul li a dragend\']();" title="Click to play, Double Click to playall from here"><img data-id="'+id+'"/>'+ title +'</a></li>';
+		return '<li>'+(editable?'<span class="remove" title="Remove">X</span>':'')+'<span class="add" title="Add to current playlist">&#43;</span><a href="'+link+'" draggable=true ondragend="toob.EVENTS[\'nav ul li a dragend\']();" title="Click to play, Double Click to playall from here"><img data-src="http://i.ytimg.com/vi/'+id+'/default.jpg"/>'+ title +'</a></li>';
 		// !!! IE wont let us dynamically attach any drag events to an element
 	},
 	
