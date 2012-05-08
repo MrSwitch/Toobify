@@ -6,18 +6,21 @@
 /**
  * Hashchange alternative
  */
-if( typeof window.onhashchange === 'undefined' || ($.browser.msie&&$.browser.version==='7.0') ){
-	var hash = window.location.hash;
-	setInterval(function(){
-		if(window.location.hash!==hash){
-			$(window).trigger('hashchange');
-			hash = window.location.hash;
-		}
-	}, 500);	
-}
+(function(){
+	if( typeof window.onhashchange === 'undefined' || ($.browser.msie&&$.browser.version==='7.0') ){
+		var hash = window.location.hash;
+		setInterval(function(){
+			if(window.location.hash!==hash){
+				$(window).trigger('hashchange');
+				hash = window.location.hash;
+			}
+		}, 500);	
+	}
+})();
 
 // 
 function channel(p){
+	var a,m,i,x,b;
 	if(typeof p !== 'object'){
 		if(!p || p.length === 0){
 			p = location.hash;
@@ -25,26 +28,28 @@ function channel(p){
 		if(!p || p.length === 0){
 			p = location.search;
 			// Safari bug the location is wrong when using pushState
-			if(document.URL&&p!==document.URL.replace(/^[^?]*/,''))
+			if(document.URL&&p!==document.URL.replace(/^[^?]*/,'')){
 				p = document.URL.replace(/^[^?]*/,'');
+			}
 		}
-		var a={},m = p.replace(/.*[#\?]/,'').match(/([^=\/\&]+)=([^\/\&]+)/g);
+		a={};
+		m = p.replace(/.*[#\?]/,'').match(/([^=\/\&]+)=([^\/\&]+)/g);
 		if(m){
-			for(var i=0;i<m.length;i++){
-				var b = m[i].split('=');
+			for(i=0;i<m.length;i++){
+				b = m[i].split('=');
 				a[b[0]] = decodeURIComponent( b[1] );
 			}
 		}
 		return a;
 	} else {
 		// create a string of parameters
-		var a =[];
-		for(var x in p){if(p.hasOwnProperty(x)){
+		a =[];
+		for(x in p){if(p.hasOwnProperty(x)){
 			a.push(x + '=' + encodeURIComponent(p[x]).replace(/%20/g,' '));
 		}}
 		return "#"+ a.join('&');
 	}
-};
+}
 
 /**
  * Change the channel
@@ -74,17 +79,20 @@ function change(hash){
 /**
  * If this page has been opened with a querystring and the browser can't rewrite it
  */
-if( window.location.search && !history.pushState )
+if( window.location.search && !history.pushState ){
 	// Change to the hash window
 	window.location = window.location.pathname+channel(channel());
+}
 
 /***************************************************************
  * Logging
  ***************************************************************/
 
 function log() {
-	if (typeof(console) === 'undefined'||typeof(console.log) === 'undefined') return;
-	if (typeof console.log === 'function') {
+	if (typeof(console) === 'undefined'||typeof(console.log) === 'undefined'){
+		 return;
+	}
+	else if (typeof console.log === 'function') {
 		console.log.apply(console, arguments); // FF, CHROME, Webkit
 	}
 	else{
@@ -96,28 +104,63 @@ function log() {
  * MODAL
  *************************************************/
 (function($){
+
 	// Open up a modal window
 	$.modal = function(title,content){
 		// Do the modal items exist?
-		if($('div.modal-bg').length === 0){
-			$('<iframe></iframe>',{'class':'modal-bg'}).appendTo('body');
-			$('<div></div>',{'class':'modal-bg'}).appendTo('body');
+		if($('div.modal-bg').length !== 0){
+			$('.modal-close').trigger('click');
 		}
-		var $m = $('div.modal');
-		if($m.length === 0){
-			$m = $('<div class="modal"><button class="modal-close">&#10005;</button><h2>'+title+'</h2><div></div></div>').appendTo('body');
-		}
-		$m.bind('close', function(){
-				$(".modal-bg,.modal-close,.modal").fadeOut('fast', function(){$(this).remove()});
-			})
-			.find('div')
-			.html(content);
 
-		$(".modal-bg,.modal-close").click(function(){
-			$m.trigger('close')
-		})
-	}
-})(jQuery)
+		var $m = $('<iframe class="modal-bg"></iframe>'+
+				'<div class="modal-bg"></div>'+
+				'<div class="modal"><button class="modal-close">&#10005;</button><h2>'+title+'</h2><div></div></div>')
+				.hide()
+				.appendTo('body')
+				.fadeIn()
+				.bind('close', function(){
+					$m.fadeOut('fast', function(){
+							$(this).remove();
+						});
+				})
+				.filter(".modal-bg")
+				.add(".modal-close")
+					.click(function(){
+						$m.trigger('close');
+					})
+				.end().end()
+				.find('div')
+					.html(content)
+				.end();
+	
+
+		
+		/**
+		$m.filter('.modal').hide().fadeIn('fast').animate({
+			width : "90%",
+			left : "5%",
+			height : "90%",
+			top : "5%"
+		},'fast');
+		*/
+	};
+})(jQuery);
+
+
+/**
+ * Add many live events at once
+ * @param object { "selector event" => function, ...} 
+ * @return
+ */
+
+jQuery.live = function(o){
+	// Bind all events listeners to this Widget
+	var x,m;
+	for( x in o ){if(o.hasOwnProperty(x)){
+		m = x.match(/(.* )?([a-z]+)$/);
+		$(m[1]||window)[m[1]?'live':'bind'](m[2], o[x]);
+	}}
+};
 
 
 
@@ -126,12 +169,15 @@ var store = {};
 if(localStorage&&localStorage.json&&typeof(JSON) !== 'undefined'){
 	store = JSON.parse( localStorage.json );
 }
+
 store.save = function(n,o){
-	if(n)
+	if(n){
 		store[n] = o;
-	if( typeof(JSON) !== 'undefined' )
+	}
+	if( typeof(JSON) !== 'undefined' ){
 		localStorage.json = JSON.stringify( store );
-}
+	}
+};
 
 
 /*************************************************

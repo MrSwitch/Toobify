@@ -1,26 +1,11 @@
 <?php
 
 /**
- * If the current location http://www.toobify.com?
- * Remove the www. prefix
- */
-if(strpos( $_SERVER['HTTP_HOST'], 'www.')===0){
-	header('Location: '. str_replace('www.', '', "http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']));
-	exit;
-}
-	
-
-/**
  * If the user has submitted a querystring we shoud go and get the details. 
  * And then reload the page immediatly using javascript if they happen to hit this page
  */
-$p = array(
-	'title'		=> '',
-	'desc'		=> 'Toobify is an awesome way to watch youtube vids!',
-	'keywords'	=> 'Youtube, videos, music, songs, entertainment, video player, music player',
-	'img'		=> '',
-	'manifest'	=> ''
-);
+$r = file_get_contents("index.html");
+
 
 if(!empty($_GET['id'])){
 	// get the information from YouTube about this video
@@ -33,25 +18,30 @@ if(!empty($_GET['id'])){
 		$a['media$group']['media$description'] = (array)$a['media$group']['media$description'];
 		$a['media$group']['media$thumbnail'] = (array)$a['media$group']['media$thumbnail'];
 		$a['media$group']['media$keywords'] = (array)$a['media$group']['media$keywords'];
-	
-		$p += array(
-			'title'		=> ' | ' . $a['title']['$t'],
-			'desc'		=> $a['media$group']['media$description']['$t'],
+		
+		// Replace Title
+		$r = preg_replace("/<title>(.*)<\/title>/", "<title>\\1 | ".$a['title']['$t']."</title>", $r);
+
+		// Replace meta
+		$meta = array(
+			'description' => $a['media$group']['media$description']['$t'],
 			'keywords'	=> $a['media$group']['media$keywords']['$t'],
-			'img'		=> $a['media$group']['media$thumbnail'][0]->url
+			'image_src'	=> $a['media$group']['media$thumbnail'][0]->url
 		);
+
+		foreach( $meta as $k => $o ){
+			$r = preg_replace("/<meta name=\"($k)\" content=\"(.*)\" \/>/","<meta name=\"$k\" content=\"$o\"/>" , $r);
+		}
+		$r = str_replace('<!--[META]->', implode("\n",$meta), $r);
 	}
 }
 
-
-
-$r = file_get_contents("template/toobify.htm");
 
 /**
  * Sniff the browser
  * Add application cache for the following browsers
  */
-if(preg_match("#(webkit|opera)#i",$_SERVER['HTTP_USER_AGENT'])){
+if(!strpos($_SERVER['HTTP_HOST'],".local")&&preg_match("#(webkit|opera)#i",$_SERVER['HTTP_USER_AGENT'])){
 	$files = files('./');	// ARRAY OF FILES IN CURRENT AND NESTED DIRECTORIES
 	$m = 0;					// LATEST MODIFICATION TIME 
 	
@@ -63,7 +53,10 @@ if(preg_match("#(webkit|opera)#i",$_SERVER['HTTP_USER_AGENT'])){
 	unset($o);
 	// remove items with null values
 	$files = array_filter( $files ); 
-	$p['manifest'] = ' manifest="cache.manifest.php?"';
+
+	// Replace Title
+	$r = str_replace("<html>", '<html manifest="cache.manifest.php?"/>', $r);
+
 	
 	foreach($files as $o){
 		$o = ltrim($o,"./");
@@ -72,10 +65,7 @@ if(preg_match("#(webkit|opera)#i",$_SERVER['HTTP_USER_AGENT'])){
 }
 
 
-// Replace meta
-foreach( $p as $k => $o ){
-	$r = str_replace("{{ ".$k." }}", $o, $r);
-}
+
 print $r;
 
 

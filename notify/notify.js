@@ -12,7 +12,7 @@ if (("external" in window)&&
 	
 	// Add site button
 	if(!window.external.msIsSiteMode()){
-		$('<div><button title="This adds thumbnail controls to IE9" class="msPinSite">Pin Start</button></div>')
+		$('<button title="This adds thumbnail controls to IE9" class="msPinSite">Pin Start</button>')
 			.appendTo('header div.tools')
 			.find('button')
 			.click(function(){
@@ -99,17 +99,24 @@ else
 // WEBKIT
 if("webkitNotifications" in window){
 	// Browser supports it :)
-	$('<div><button>Remote</button></div>')
+	$('<button>Remote</button>')
 		.appendTo('header div.tools')
-		.find('button')
 		.click(function(){
-			window.webkitNotifications.requestPermission(function(){
-				if(window.webkitNotifications.checkPermission() != 0) return; 
+			var notify = function(){
 				window
 					.webkitNotifications
 					.createHTMLNotification('./notify.htm')
 					.show();
-	        });
+			}
+			if(window.webkitNotifications.checkPermission() != 0){
+				window.webkitNotifications.requestPermission(function(){
+					if(window.webkitNotifications.checkPermission() != 0) return; 
+					notify();
+				});
+			}
+			else{
+				notify();
+			}
 		});
 
 	// Add script which passes the messages back and forth
