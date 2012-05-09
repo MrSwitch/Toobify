@@ -1,7 +1,7 @@
 //
 // Player.js
 // Listens for changes to the hashtag and changes the content of the ou player.
-// 
+//
 
 
 
@@ -23,7 +23,7 @@ $.live({
 		// this gets triggered when we get a hasnchange event on the page
 		if(toob.player()){
 			// Add active class
-			$('article').addClass('active').siblings().removeClass('active')
+			$('article').addClass('active').siblings().removeClass('active');
 		}
 		else{
 			$('.frame:first').addClass('active').siblings().removeClass('active');
@@ -32,7 +32,7 @@ $.live({
 	// REMOTE
 	// Called from remote window, browser control
 	'toobifyRemote' : function(e, data){
-		console.log();
+		log('toobifyRemote');
 		if(!(toob.fplayer=document.getElementById('fplayer'))) return;
 
 		// If no data is passed then merely trigger the current state
@@ -56,6 +56,9 @@ $.live({
 	}
 });
 
+var ytvideo;
+
+
 
 var toob = {
 	//
@@ -65,12 +68,12 @@ var toob = {
 	
 		var p =  channel();
 		
-		console.log(p);
+		log(p);
 
 		if(!p||!p.id){
 			$('article').html('<div id="player"></div>');
 			return false;
-		} 
+		}
 
 		$('h1').html((document.title = p.title));
 		
@@ -78,13 +81,53 @@ var toob = {
 			$('meta[name=image_src]').attr('content',json['entry']['media$group']['media$thumbnail'][0]['url']);
 		});
 
-		if(!document.getElementById('fplayer')){
-			swfobject.embedSWF('http://www.youtube.com/v/'+ p.id +'?color1=0x000000&color2=0x000000&version=3&enablejsapi=1&playerapiid=ytplayer', "player", "100%", "100%", "9", null, 
-			{}, { allowScriptAccess: "always", bgcolor: "#cccccc" }, { id: "fplayer" });
-			toob.fplayer = document.getElementById('fplayer');
+		if(!ytvideo){
 
-		} else if( p.id !== document.getElementById('fplayer').getVideoUrl().match(/[\?\&]v=([^&]+)/)[1] ){
-			document.getElementById('fplayer').loadVideoById(p.id);
+			if(swfobject.hasFlashPlayerVersion('10')){
+
+				log('Loading SWF');
+
+				swfobject.embedSWF('http://www.youtube.com/v/'+ p.id +'?color1=0x000000&color2=0x000000&version=3&enablejsapi=1&playerapiid=ytplayer',
+					"player",
+					"100%",
+					"100%",
+					"9",
+					null,
+				{}, { allowScriptAccess: "always", bgcolor: "#cccccc" }, { id: "fplayer" });
+
+				ytvideo = document.getElementById('fplayer');
+
+			}
+			// Else have we loaded the Javascript library yet?
+			else if(!document.getElementById('yt_player_api')){
+				// lets try the chromeless player
+				log('Loading the HTML5 player');
+				// 2. This code loads the IFrame Player API code asynchronously.
+				var tag = document.createElement('script');
+				tag.src = "http://www.youtube.com/player_api";
+				tag.id = 'yt_player_api';
+				var firstScriptTag = document.getElementsByTagName('script')[0];
+				firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+				// 3. This function creates an <iframe> (and YouTube player)
+				//    after the API code downloads.
+				window.onYouTubePlayerAPIReady = function() {
+					log('onYouTubePlayerAPIReady');
+					ytvideo = new YT.Player('player', {
+						height: '100%',
+						width: '100%',
+						videoId: p.id,
+						events: {
+							'onReady': function(){log('player onReady fired');},
+							'onStateChange': toob._stateChange
+						}
+					});
+				};
+			}
+
+		} else if( p.id !== ytvideo.getVideoUrl().match(/[\?\&]v=([^&]+)/)[1] ){
+			log('changing the video');
+			ytvideo.loadVideoById(p.id);
 		}
 		else{
 			return true;
@@ -94,7 +137,9 @@ var toob = {
 		store.playlist.push(p.id);
 
 		// Store the view of the item
-		store.played[p.id]++ || (store.played[p.id]=1);
+		if(! (store.played[p.id]++) ) {
+			store.played[p.id] = 1;
+		}
 	
 		// Store a list of video title references for general use.
 		store.videos[p.id] = p.title;
@@ -108,12 +153,16 @@ var toob = {
 	_stateChange : function(state){
 
 		log('newstate: '+(['ended','playing','paused','buffering','','video cued'][state] || 'uncertain/unstarted'));
-		var id = (toob.fplayer=document.getElementById('fplayer')).getVideoUrl().match(/\?v=([^&]+)/)[1];
+		var id;
+		try{
+			id = ytvideo.getVideoUrl().match(/\?v=([^&]+)/)[1];
+		}catch(e){}
+
 		// if the new state has changed, and it is the current item playing
 		var href = $('nav.results ul li.selected a').attr('href');
 		if( state === 0 && ( href && (channel(href).id === channel().id) ) && $('nav.results li.selected').next().length ){
 			// then play the next one
-			toob.next();
+			nav.next();
 			return;
 		}
 		else if ( state === 3 && (id !== channel().id) ){
@@ -126,9 +175,9 @@ var toob = {
 				});
 			});
 		} else if( state === 5 ){
-			toob.fplayer.playVideo();
+			ytvideo.playVideo();
 		} else if( state === 1 ){
-			// trigger a change in player which should update the 
+			// trigger a change in player which should update the
 		}
 
 		// Trigger state change
@@ -139,7 +188,7 @@ var toob = {
 	//
 	triggerState	: function(){
 		$(window).trigger('toobifyState', [{
-			state	: toob.fplayer.getPlayerState(),
+			state	: ytvideo.getPlayerState(),
 			title	: channel().title,
 			play	: channel(channel()),
 			next	: $('nav.results ul li.selected').next().find('a').attr('href'),
