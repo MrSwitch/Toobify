@@ -345,9 +345,12 @@ nav{
 		padding-top: 5px
 	}
 
-		/**
-		 * Thumb view
-		 */
+	/**
+	 * Thumb view
+	 */
+	nav.thumbs ul{
+		text-align:center;
+	}
 		nav.thumbs ul li{
 		/*
 			-moz-box-shadow: 2px 2px 5px black inset;
@@ -533,7 +536,7 @@ iframe.modal-bg{
  	nav ul:empty:after{
  		content:'Loading...';
  		font-size:3em;
- 		color:white;
+ 		color:rgba(255,255,255,0.1);
 	}
 	#player:empty{
 		text-align:center;
@@ -560,3 +563,17 @@ iframe.modal-bg{
 		z-index:1;
 		display:block;
 	}
+
+
+/**
+ * Override .resize buttons in the
+ */
+	.frameset .frame button.resize{
+		box-shadow: 0 0 5px black inset;
+		background: rgb(25,25,25);
+		background: rgba(255, 255, 255, 0.1);
+	}
+
+
+
+
