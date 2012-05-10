@@ -157,6 +157,9 @@ var nav = {
 
 			var s = $('input', this).val();
 
+			// remove the text
+			$('input', this).val('');
+
 			var $ul = nav.tab(s, $('nav.search ul').get(0));
 
 			// for pagination
