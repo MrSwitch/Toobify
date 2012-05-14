@@ -32,6 +32,14 @@
 	
 	<script>
 //<![CDATA[
+		// 
+		function LikeModernizr(test,label){
+			document.getElementsByTagName('html').className = document.getElementsByTagName('html').className + ' ' + (test?'':'no-') + label;
+		}
+
+		LikeModernizr('ontouchstart' in window, 'touch');
+
+		// Add the libraries
 		var local = ( /^local\./.test(window.location.host) ? 0 : 1);
 		function loadScript(a){
 			for(var i=0,s;i<a.length;i++){

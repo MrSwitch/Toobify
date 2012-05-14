@@ -16,10 +16,16 @@ body{
 	font-family:'Molengo', Arial, Helvetica, sans-serif;
 	color:white;
 	position:fixed;
+	font-size:12px;
 	bottom:0;
 	height:100%;
-	font-size:12px;
 }
+
+.touch body{
+	font-size:20px;
+}
+
+
 header, header div.logo{
 	filter: progid:DXImageTransform.Microsoft.gradient(gradientType=0,startColorstr='#00000000', endColorstr='#C0000000');
 	background:-moz-linear-gradient(

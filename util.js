@@ -14,11 +14,11 @@
 				$(window).trigger('hashchange');
 				hash = window.location.hash;
 			}
-		}, 500);	
+		}, 500);
 	}
 })();
 
-// 
+//
 function channel(p){
 	var a,m,i,x,b;
 	if(typeof p !== 'object'){
@@ -90,7 +90,7 @@ if( window.location.search && !history.pushState ){
 
 function log() {
 	if (typeof(console) === 'undefined'||typeof(console.log) === 'undefined'){
-		 return;
+		return;
 	}
 	else if (typeof console.log === 'function') {
 		console.log.apply(console, arguments); // FF, CHROME, Webkit
@@ -147,11 +147,11 @@ function log() {
 })(jQuery);
 
 
-/**
- * Add many live events at once
- * @param object { "selector event" => function, ...} 
- * @return
- */
+//
+// Add many live events at once
+// @param object { "selector event" => function, ...}
+// @return
+//
 
 jQuery.live = function(o){
 	// Bind all events listeners to this Widget
@@ -162,8 +162,9 @@ jQuery.live = function(o){
 		if(m[2]==='scroll'&&!m[1]){
 			$(m[1]||window).scroll(o[x]);
 		}
-		else 
+		else{
 			$(m[1]||window)[m[1]?'live':'bind'](m[2].replace(',',' '), o[x]);
+		}
 	}
 
 };
