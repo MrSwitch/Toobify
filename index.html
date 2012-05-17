@@ -34,7 +34,10 @@
 //<![CDATA[
 		// 
 		function LikeModernizr(test,label){
-			document.getElementsByTagName('html').className = document.getElementsByTagName('html').className + ' ' + (test?'':'no-') + label;
+			var tag = document.getElementsByTagName('html')[0];
+			if(tag){
+				tag.className = tag.className + ' ' + (test?'':'no-') + label;
+			}
 		}
 
 		LikeModernizr('ontouchstart' in window, 'touch');

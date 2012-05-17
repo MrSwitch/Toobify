@@ -439,7 +439,7 @@ var nav = {
 
 		
 		$ul.attr( "data-id", i ).attr( "data-label", t );
-		$li.attr( "data-id", i ).attr( "data-label", t ).attr( "title", "Click to select, Double click to change label" ).html(t.replace(/ /g,'&nbsp;')+'<span class="remove">X</span>').trigger('click');
+		$li.attr( "data-id", i ).attr( "data-label", t ).attr( "title", "Click to select, Double click to change label" ).html(t.replace(/ /g,'&nbsp;')+'<span class="remove">&#x00D7;</span>').trigger('click');
 		
 		return $ul;
 	},
@@ -566,7 +566,7 @@ var nav = {
 		
 		// Create a list item with an anchor including an image tag which is initally empty.
 		// When the user switches between views then we size the image. And insert its value where we can
-		return '<li>'+(editable?'<span class="remove" title="Remove">X</span>':'')+'<span class="add" title="Add to current playlist">&#43;</span><a href="'+link+'" draggable=true ondragend="nav.EVENTS[\'nav ul li a dragend\']();" title="Click to play, Double Click to playall from here"><img data-src="http://i.ytimg.com/vi/'+id+'/default.jpg"/>'+ title +'</a></li>';
+		return '<li>'+(editable?'<span class="remove" title="Remove">&#x00D7;</span>':'')+'<a href="'+link+'" draggable=true ondragend="nav.EVENTS[\'nav ul li a dragend\']();" title="Click to play, Double Click to playall from here"><img data-src="http://i.ytimg.com/vi/'+id+'/default.jpg"/>'+ title +'</a></li>';
 		// !!! IE wont let us dynamically attach any drag events to an element
 	},
 	
