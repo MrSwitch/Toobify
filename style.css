@@ -301,27 +301,41 @@ nav{
 					text-decoration:none;
 				}
 				
-				nav li span.remove,nav li span.add {
+				nav ul li span{
 					float:right;
-					display:none;
+					display:block;
+					opacity:0;
 					position:relative;
 					font-family:arial;
 					cursor:pointer;
 					padding:0 2px;
 					margin:0;
-					border:1px solid rgba(0,0,0,0.3);
-					box-shadow:0 0 5px rgba(0,0,0,0.3) inset;
 					-moz-border-radius:10px;
 					-webkit-border-radius:10px;
+					border:1px solid transparent;
 					border-radius:10px;
 					font-size:0.9em;
 					line-height:1em;
 				}
-				nav li:hover span.remove,
-				nav li:hover span.add,
-				.touch nav li span.remove,
-				.touch nav li span.add {
-					display:block;
+				nav ul li:hover span,
+				.touch nav ul li span {
+					border:1px solid rgba(0,0,0,0.3);
+					box-shadow:0 0 5px rgba(0,0,0,0.3) inset;
+					opacity:1;
+				}
+				nav ul li span.favourite:after{
+					content : '\2606';
+				}
+				nav ul li span.remove:after{
+					content: '\00D7';
+					font-size: 1.5em;
+				}
+				nav ul li.favourite span.favourite{
+					color:gold;
+					opacity:1;
+				}
+				nav ul li.favourite span.favourite:after{
+					content : '\2605';
 				}
 
 		/**
@@ -430,7 +444,22 @@ nav{
 						-webkit-box-shadow:1px 1px 6px black;
 						box-shadow:1px 1px 6px black;
 					}
-
+/**
+ * Nav SELECT
+ */
+nav ul ~ select{
+	position:absolute;
+	-moz-appearance:button;
+	-webkit-appearance: button;
+	right: 10px;
+	bottom:0;
+	background:rgba(0,0,0,0.1);
+	border:0;
+	padding:2px;
+	color:inherit;
+}
+nav ul ~ select option{
+}
 
 /**
  * Main Content
@@ -562,7 +591,7 @@ iframe.modal-bg{
 		text-align:center;
 	}
  	#player:empty:after{
- 		content:"\2190  search and select";
+ 		content:"\2190  search, select, play";
  		font-size:3em;
  		position:absolute;
  		top:45%;

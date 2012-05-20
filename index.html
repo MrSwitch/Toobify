@@ -43,7 +43,7 @@
 		LikeModernizr('ontouchstart' in window, 'touch');
 
 		// Add the libraries
-		var local = ( /^local\./.test(window.location.host) ? 0 : 1);
+		var local = ( /^(local\.|drew.local)/.test(window.location.host) ? 0 : 1);
 		function loadScript(a){
 			for(var i=0,s;i<a.length;i++){
 				if(a[i].match(/.css$/)){
@@ -68,6 +68,7 @@
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
 	<script type="text/javascript" src="jquery.js"></script>
 	-->
+
 </head>
 <body>
 	<header>
@@ -76,21 +77,35 @@
 		<div class="tools"></div>
 	</header>
 	<section class="frameset inline">
-		<nav class="search" style="width:33.3%;" data-framename="Query">
+		<nav class="search" style="width:20%;" data-framename="Query">
 			<form class="search" action="#whoops">
-				<input type="search" placeholder="Search"/>
+				<input type="search" placeholder="Search" list='autocomplete'/>
 				<button title="Search YouTube">&#9658;</button>
 			</form>
 			<ul></ul>
+			<select class="options">
+				<option value="">options</option>
+				<optgroup label="sort">
+					<option value="a-z">A-Z</option>
+					<option value="z-a">Z-A</option>
+					<option value="latest">Latest</option>
+					<option value="oldest">Oldest</option>
+				</optgroup>
+				<optgroup label="show">
+					<option value="played:">Played</option>
+					<option value="stars:">Stars</option>
+				</optgroup>
+			</select>
 		</nav>
-		<nav class="results" style="width:33.3%;" data-framename="Search">
+		<nav class="results" style="width:30%;" data-framename="Search">
 			<div class="control"><button class="workspace-back" style="float:left;">Back</button><button data-toggle="thumbs" class="view">Thumbs</button><button class="share">Share</button></div>
 		</nav>
-		<article style="width:33.3%;">
+		<article style="width:50%;">
 			<div id="player"></div>
 		</article>
 	</section>
 
+	<datalist id="autocomplete"></datalist>
 
 <script>
 		loadScript([['/_packages/jquery.js','http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'][local]]);
