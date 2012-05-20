@@ -19,6 +19,24 @@
 })();
 
 //
+var message = {
+	send : function(name, data){
+		if(this.listeners.hasOwnProperty(name)){
+			for( var i=0; i<this.listeners[name].length; i++ ){
+				this.listeners[name][i](data);
+			}
+		}
+	},
+	listen : function(name, callback){
+		if(!(name in this.listeners)){
+			this.listeners[name] = [];
+		}
+		this.listeners[name].push(callback);
+	},
+	listeners : {}
+};
+
+//
 function channel(p){
 	var a,m,i,x,b;
 	if(typeof p !== 'object'){

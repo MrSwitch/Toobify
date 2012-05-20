@@ -3,22 +3,25 @@
 <head>
 	<title>ToobDesk</title>
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+	<script src="util.js"></script>
 	<script src="notify/rend.js"></script>
 	<link href="style.css" rel="stylesheet" />
 	<script>
 		$(document).ready(function(){
 			// Listen to "player state" Events
-			$(window).bind('toobifyRemote', function(e,data){
+			message.listen('toobifyRemote', function(data){
 				if(data.title)
 					$('h1').html(data.title);
-				$('.state').html(['ended','playing','paused','buffering','','video cued'][data.state] || 'hmmmm... ');
+				$('.state').html(['ended','playing','paused','buffering','','video cued'][data.state] || '...');
+				if(data.img)
+					$('body').css({ backgroundImage : 'url('+data.img+')'});
 				$('button.play')[data.state===1?'hide':'show']();
 				$('button.pause')[data.state!==1?'hide':'show']();
 			});
 			
 			// Trigger an empty toobifyState
 			// This requests the current state.
-			$(window).trigger('toobifyState');
+			message.send('toobifyState');
 
 			// Add events to the button
 			$('button').click(function(){
@@ -28,13 +31,23 @@
 					'prev'	: {prev:true},
 					'next'	: {next:true}
 				};
-				$(window).trigger('toobifyState', [o[this.className]]);// play
+				message.send('toobifyState', o[this.className]);// play
 			});
+
+			message.listen('hello', function(data){
+				if(data.question==='whoareyou'){
+					message.send('hello',{reply:'remote'});
+				}
+			});
+
 		});
 	</script>
 	<style>
 		body{
-			background:#222;
+			background-color:#222;
+			background-repeat:no-repeat;
+			background-position:center center;
+			background-size:100%;
 			height:100px;
 			position:relative;
 			text-align:center;
@@ -52,9 +65,20 @@
 				right:0;
 			}
 			p{
+				position:absolute;
+				bottom:0;
+				left:0;
+				right:0;
+				text-align:center;
 				font-style:italic;
-				opacity:0.5;
+				opacity:0.7;
+				background-color:#222;
+				margin:0;
 			}
+			button{
+				background-color:rgba(40,40,40,0.8);
+			}
+
 	
 	</style>
 </head>

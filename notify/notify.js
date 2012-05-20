@@ -102,7 +102,7 @@ else if("webkitNotifications" in window){
 		var n;
 
 		// Browser supports it :)
-		$('<button>Remote</button>')
+		var $btn = $('<button>Remote</button>')
 			.appendTo('header div.tools')
 			.click(function(){
 
@@ -147,7 +147,16 @@ else if("webkitNotifications" in window){
 			});
 
 		// Add script which passes the messages back and forth
-		$.getScript('./notify/rend.js');
+		$.getScript('./notify/rend.js', function(){
+			// Have we already got a messenger open?
+			message.listen('hello', function(data){
+				if(data.reply==='remote'){
+					$btn.addClass('active');
+				}
+			});
+			message.send('hello', {question:'whoareyou'});
+		});
+
 
 	})();
 }
