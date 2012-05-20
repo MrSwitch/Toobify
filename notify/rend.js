@@ -8,7 +8,7 @@
 			rev = event.data.rev;
 		}
 	}, false);
-	 
+
 	// START THE CONNECTION TO SHAREDWORKER
 	// REQUIRED WHEN USING "addEventListener()"
 	notification.port.start();
