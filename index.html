@@ -45,6 +45,7 @@
 			}
 		}
 		loadScript([['/$.share.js/jquery.share.css','http://mrswitch.github.com/jquery.share.js/jquery.share.css'][local],
+		['../$.prompt.js/jquery.prompt.css','http://mrswitch.github.com/jquery.prompt.js/jquery.prompt.css'][local],
 		['../workspace.js/workspace.css','http://mrswitch.github.com/workspace.js/workspace.css'][local]]);
 //]]>
 	</script>
@@ -62,7 +63,7 @@
 	<header>
 		<div class="logo">Toobify</div>
 		<h1></h1>
-		<div class="tools"></div>
+		<div class="tools"><button class="about">About</button></div>
 	</header>
 	<section class="frameset inline">
 		<nav class="search" style="width:33.3%;" data-framename="Query">
@@ -90,11 +91,13 @@
 
 <script>
 	loadScript([['/$.share.js/jquery.share.js','http://mrswitch.github.com/jquery.share.js/jquery.share.js'][local],
+				['../$.prompt.js/jquery.prompt.js','http://mrswitch.github.com/jquery.prompt.js/jquery.prompt.js'][local],
 				['../workspace.js/workspace.js','http://mrswitch.github.com/workspace.js/workspace.js'][local]
 			]);
 </script>
 <script src="nav.js" ></script>
 <script src="share.js" ></script>
+<script src="about.js" ></script>
 <script src="player.js" ></script>
 <script src="notify/notify.js" ></script>
 
