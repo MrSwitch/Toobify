@@ -16,10 +16,16 @@ body{
 	font-family:'Molengo', Arial, Helvetica, sans-serif;
 	color:white;
 	position:fixed;
+	font-size:12px;
 	bottom:0;
 	height:100%;
-	font-size:12px;
 }
+
+.touch body{
+	font-size:15px;
+}
+
+
 header, header div.logo{
 	filter: progid:DXImageTransform.Microsoft.gradient(gradientType=0,startColorstr='#00000000', endColorstr='#C0000000');
 	background:-moz-linear-gradient(
@@ -97,7 +103,7 @@ button{
 	-webkit-user-select:none;
 	-moz-user-select:none;
 	font-family:"Lucida Grande", Arial, sans-serif;
-	font-size:13px;
+	font-size:1em;
 	cursor:pointer;
 	vertical-align: middle;
 }
@@ -144,7 +150,7 @@ div.tools{
 
 		div.tools button.share span.count{
 			color:white;
-			font-size:9px;
+			font-size:0.9em;
 			margin-top:10px;
 			position:absolute;
 		}
@@ -179,19 +185,18 @@ nav{
 		*/width:auto;
 		margin:0 10px;
 		padding-top:4px;
-		margin-bottom:-1px;
 		position:relative;
-		height:30px;
+		height:35px;
 	}
 		nav form input{
 			position: absolute;
 			background-color:#636365;
 			border:1px solid black;
 			color:white;
-			height:22px;
+			font-size:1.1em;
 			margin:0;
 			bottom:3px;
-			padding:0 2px;
+			padding:2px;
 			left:3px;
 			right:40px;
 			-webkit-appearance:none;
@@ -267,6 +272,15 @@ nav{
 					margin-right:3px;
 				}
 
+		.touch nav ul li{
+			line-height:2em;
+		}
+				.touch nav ul li a img{
+					width:36px;
+					vertical-align:middle;
+				}
+
+
 		nav ul li:hover {
 			background-color:#232323;
 			border-top-color: #1B1B1B;
@@ -287,21 +301,41 @@ nav{
 					text-decoration:none;
 				}
 				
-				nav li span.remove,nav li span.add {
+				nav ul li span{
 					float:right;
-					display:none;
+					display:block;
+					opacity:0;
 					position:relative;
 					font-family:arial;
 					cursor:pointer;
 					padding:0 2px;
-					border:1px solid black;
+					margin:0;
 					-moz-border-radius:10px;
 					-webkit-border-radius:10px;
+					border:1px solid transparent;
 					border-radius:10px;
-					font-size:8px;
+					font-size:0.9em;
+					line-height:1em;
 				}
-				nav li:hover span.remove,nav li:hover span.add {
-					display:block;
+				nav ul li:hover span,
+				.touch nav ul li span {
+					border:1px solid rgba(0,0,0,0.3);
+					box-shadow:0 0 5px rgba(0,0,0,0.3) inset;
+					opacity:1;
+				}
+				nav ul li span.favourite:after{
+					content : '\2606';
+				}
+				nav ul li span.remove:after{
+					content: '\00D7';
+					font-size: 1.5em;
+				}
+				nav ul li.favourite span.favourite{
+					color:gold;
+					opacity:1;
+				}
+				nav ul li.favourite span.favourite:after{
+					content : '\2605';
 				}
 
 		/**
@@ -345,9 +379,12 @@ nav{
 		padding-top: 5px
 	}
 
-		/**
-		 * Thumb view
-		 */
+	/**
+	 * Thumb view
+	 */
+	nav.thumbs ul{
+		text-align:center;
+	}
 		nav.thumbs ul li{
 		/*
 			-moz-box-shadow: 2px 2px 5px black inset;
@@ -407,7 +444,22 @@ nav{
 						-webkit-box-shadow:1px 1px 6px black;
 						box-shadow:1px 1px 6px black;
 					}
-
+/**
+ * Nav SELECT
+ */
+nav ul ~ select{
+	position:absolute;
+	-moz-appearance:button;
+	-webkit-appearance: button;
+	right: 10px;
+	bottom:0;
+	background:rgba(0,0,0,0.1);
+	border:0;
+	padding:2px;
+	color:inherit;
+}
+nav ul ~ select option{
+}
 
 /**
  * Main Content
@@ -533,13 +585,13 @@ iframe.modal-bg{
  	nav ul:empty:after{
  		content:'Loading...';
  		font-size:3em;
- 		color:white;
+ 		color:rgba(255,255,255,0.1);
 	}
 	#player:empty{
 		text-align:center;
 	}
  	#player:empty:after{
- 		content:"No content - yet";
+ 		content:"\2190  search, select, play";
  		font-size:3em;
  		position:absolute;
  		top:45%;
@@ -560,3 +612,17 @@ iframe.modal-bg{
 		z-index:1;
 		display:block;
 	}
+
+
+/**
+ * Override .resize buttons in the
+ */
+	.frameset .frame button.resize{
+		box-shadow: 0 0 5px black inset;
+		background: rgb(25,25,25);
+		background: rgba(255, 255, 255, 0.1);
+	}
+
+
+
+

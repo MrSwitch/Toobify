@@ -25,11 +25,15 @@ var nav = {
 		if(!store.played || "push" in store.played )
 			store.played = {};
 
+		if(!store.favourites || !("push" in store.favourites) )
+			store.favourites = [];
+
 		if(!store.tabs || store.tabs.length === 0){
 //		if(true){
 			store.tabs = [
 				{
 					title : "@toobify",
+					time : (new Date()).getTime(),
 					type : 0 // search
 				}
 			];
@@ -46,7 +50,7 @@ var nav = {
 
 		$(store.tabs).each(function(i,o){
 			if(!o) return;
-			var ul = nav.tab(o.title,$ol,null,o.info,true);
+			var ul = nav.tab(o,$ol);
 			if(!o.list){
 				// Run the search and populate the tab
 				$(ul).trigger('search');
@@ -60,6 +64,8 @@ var nav = {
 			}
 		});
 
+		// Put it back
+		store.tabs.reverse();
 
 
 		// trigger click
@@ -74,16 +80,16 @@ var nav = {
 		
 
 
-	    // Has the user passed in a query?
-	    if(channel().q){
-	    	// Create a new tab with the search results
-			var ul = nav.tab(channel().label || channel().q, $ol,null,null,true ), 
+		// Has the user passed in a query?
+		if(channel().q){
+			// Create a new tab with the search results
+			var ul = nav.tab({title:channel().label || channel().q}, $ol ),
 				q = channel().q || channel().label;
 
 			nav.search(q.replace(/\|/g,' | '), ul);
-			var id = $(ul).attr('data-id');
+			id = $(ul).attr('data-id');
 			$('nav.results > ul[data-id='+id+'] div button.view, nav.search li[data-id='+id+']').trigger('click');
-	    }
+		}
 
 		// Trigger resize
 		$(window).trigger('hashchange').trigger('resize');
@@ -92,9 +98,9 @@ var nav = {
 	},
 
 	EVENTS : {
-		/**
-		 * Tab switcher
-		 */
+		//
+		// Tab switcher
+		//
 		'nav.search ul li:not(.add) click' : function(){
 			$('nav.results ul[data-id='+ $(this).attr('data-id') +']')
 				.add(this)
@@ -115,8 +121,8 @@ var nav = {
 		'nav.search ul li:not(.add) dblclick' : function(){
 			var t = prompt("What do you want to call this tab?", $(this).text().replace(/X$/,'') );
 			
-			if( !t || t.length==0 ) return;
-			nav.tab( t, $(this).parent(), $(this).attr('data-id') );
+			if( !t || t.length===0 ){ return; }
+			nav.tab( {title : t, id:$(this).attr('data-id')},  $(this).parent() );
 			$(window).trigger('savetabs');
 			return false;
 		},
@@ -124,40 +130,41 @@ var nav = {
 		'nav.search ul li span.remove click' : function(){
 			var $li = $(this).parent('li'),
 				i = $li.attr('data-id');
-
-			if($li.siblings(":not(.add):first").trigger('click').length===0){
-				nav.tab("NEW TAB",$li.parent());
-			}
 			
 			$('nav > [data-id='+i+']').add($li).remove();
 
 			$(window).trigger('savetabs');
 		},
+
 		// Save the current tabs
 		'savetabs' : function(){
 			var a=[];
 			// loop through all the tabs and build up the tab list
 			$('nav.search ul li').each(function(){
-				var id = parseInt($(this).attr('data-id'));
+				var id = parseInt($(this).attr('data-id'),10);
 				a.push({
 					title	: $(this).attr('data-label'),
 					list	: nav.getIds($('nav.results ul[data-id='+id+']')),
-					info	: ($('nav ul[data-id=' + id + '] > i').html())
+					info	: ($('nav ul[data-id=' + id + '] > i').html()),
+					time	: $(this).attr('data-time')
 				});
 			});
 			store.tabs = a;
 			store.save();
 		},
-		/**
-		 * Searching
-		 */
+		//
+		// Searching
+		//
 		'nav.search form submit' : function(e){
 
 			e.preventDefault();
 
 			var s = $('input', this).val();
 
-			var $ul = nav.tab(s, $('nav.search ul').get(0));
+			// remove the text
+			$('input', this).val('');
+
+			var $ul = nav.tab({title:s}, $('nav.search ul').get(0));
 
 			// for pagination
 			if(s)store.queries.push(s);
@@ -166,7 +173,7 @@ var nav = {
 			$($ul).trigger('search');
 
 			// Add active class
-			$(this).parents('.frame').next('.frame').addClass('active').siblings().removeClass('active')
+			$(this).parents('.frame').next('.frame').addClass('active').siblings().removeClass('active');
 			
 			return false;
 		},
@@ -182,7 +189,7 @@ var nav = {
 			if($(this).hasClass('loading')){
 				// do not do anything else
 				return;
-			};
+			}
 
 			// Add Loading
 			var $ul = $(this).addClass('loading');
@@ -204,12 +211,45 @@ var nav = {
 			});
 	
 		},
-		'nav button.order click' : function(){
-			var $ul= $('ul:visible', this);
-				li = $ul.find('li').detach().sort(function(a,b){
-					return $(a).text()>$(b).text();
-				});
-			$ul.append(li);
+		'nav select.options change' : function(){
+			if(this.value===""){
+				return;
+			}
+			var sort = {
+					'a-z' : function(a,b){
+						a = $(a).text().toLowerCase();
+						b = $(b).text().toLowerCase();
+						return a<b?-1:(a>b?1:0);
+					},
+					'z-a' : function(a,b){
+						a = $(a).text().toLowerCase();
+						b = $(b).text().toLowerCase();
+						return a<b?1:(a>b?-1:0);
+					},
+					'latest' : function(a,b){
+						a = parseInt($(a).attr('data-time'),10);
+						b = parseInt($(b).attr('data-time'),10);
+						return a<b?1:(a>b?-1:0);
+					},
+					'oldest' : function(a,b){
+						a = parseInt($(a).attr('data-time'),10);
+						b = parseInt($(b).attr('data-time'),10);
+						return a<b?-1:(a>b?1:0);
+					}
+				},
+				v = this.value;
+
+			if(v in sort){
+				var $ul= $('ul:visible', this.parentNode),
+					li = $ul.find('li').detach().sort(sort[v]);
+
+				$ul.append(li);
+			}
+			else{
+				var ul = nav.tab({title:this.value},$(this).parents('nav').find('ul'));
+				// Run the search and populate the tab
+				$(ul).trigger('search');
+			}
 		},
 		'nav.results ul scroll' : function(e){
 			// Load images
@@ -220,9 +260,9 @@ var nav = {
 				$(this).trigger('search');
 			}
 		},
-		/**
-		 * Double Click starts playing defines the item as selected
-		 */
+		//
+		// Double Click starts playing defines the item as selected
+		//
 		'nav.results ul li a click'	: function(){
 			// Remove any selected video
 			nav.anchorplaying = this;
@@ -244,6 +284,22 @@ var nav = {
 			$(this).parent().remove();
 			$(window).trigger('savetabs');
 		},
+		'nav.results ul li span.favourite click' : function(e){
+			e.stopPropagation();
+			e.preventDefault();
+			var p = channel( $(this).siblings('a').attr('href') );
+
+			if( $(this).parent('li').toggleClass('favourite').is('.favourite') ){
+				store.favourites.push(p.id);
+			}
+			else{
+				var i = store.favourites.indexOf(p.id);
+				if(i>-1){
+					store.favourites.splice(i,1);
+				}
+			}
+			store.save();
+		},
 		'nav.results ul li span.add click' : function(){
 			var $li = $(this).parent(),
 				p = channel($li.find('a').attr('href'));
@@ -258,9 +314,9 @@ var nav = {
 			$(window).trigger('savetabs');
 		},
 
-		/**
-		 * Drag and Drop
-		 */
+		//
+		// Drag and Drop
+		//
 		'nav ul li a dragstart' : function(ev) {
 			var dt = ev.originalEvent.dataTransfer;
 			ev.originalEvent.dataTransfer.setData("text/plain", this.href);
@@ -274,7 +330,7 @@ var nav = {
 			return false;
 		},
         'nav ul dragenter' : function(ev) {
-/*        
+/*
 			if(target.tagName.match(/UL|DIV/)){
 				$((target.tagName==='UL'?target:$('ul', target))).addClass('dragover');
 			}
@@ -330,7 +386,7 @@ var nav = {
 			if($orig.length){
 				s = $orig;
 				$orig.remove();
-			};
+			}
 
 			if(target.tagName.match(/UL|SPAN/)){
 				$(s).appendTo(target.tagName==='UL'?target:$(target).parent('ul'));
@@ -346,12 +402,12 @@ var nav = {
 			$ul.trigger('updatelist');
 			
 			// Store data structure
-			$(window).trigger('savetabs');			
+			$(window).trigger('savetabs');
 			return false;
 		},
-		/**
-		 * Switch list views
-		 */
+		//
+		// Switch list views
+		//
 		"nav div.control button.view click"	: function(){
 			// change the view
 			var action = ($(this).hasClass('active') ? 'remove' : 'add');
@@ -361,16 +417,16 @@ var nav = {
 			$(this).parents('nav').find('.selected').trigger('updatelist');
 		},
 		
-		/**
-		 * Share the playlist
-		 */
+		//
+		// Share the playlist
+		//
 		"nav div.control button.share click"	: function(){
 			var a=[],
 				$ul=$(this).parents("nav").find('ul.selected'),
 				label=$ul.attr('data-label');
 
 			$(nav.getIds($ul)).each(function(k,v){
-				try{ a.push(v.match(/id=([^\&]+)/)[1]) }
+				try{ a.push(v.match(/id=([^\&]+)/)[1]); }
 				catch(e){}
 			});
 
@@ -382,61 +438,53 @@ var nav = {
 				.each(function(){
 					var h = $(this).height(),t;
 					$('li',this).each(function(){
-						t = $(this).position().top; 
+						t = $(this).position().top;
 						if(t>0&&t<(h+$(this).height())){
 							$('img:not([src])',this).each(function(){
 								this.src = $(this).attr('data-src');
 								$(this).removeAttr('data-src');
 								// Have we already loaded this image into the browser?
-						    	if( $.inArray(this.src,nav.images) > -1 ){
-							    	$(this).animate({opacity:1},'fast');
-						    	} else {
-						    		$(this).load( function(){$(this).animate({opacity:1},'fast');nav.images.push(this.src);} );
-						    	}
+								if( $.inArray(this.src,nav.images) > -1 ){
+									$(this).animate({opacity:1},'fast');
+								} else {
+									$(this).load( function(){$(this).animate({opacity:1},'fast');nav.images.push(this.src);} );
+								}
 							});
 						}
 					});
 				});
 		}
 	},
-	tab		: function(t, ol, id, info){
+	tab		: function(opt, ol){
 
-		var i = (parseInt(id) >= 0 ? parseInt(id) : this.tabs_length ),
+		var t = opt.title,
+			id = opt.id,
+			time = opt.time || (new Date()).getTime(),
+			i = (parseInt(id,10) >= 0 ? parseInt(id,10) : this.tabs_length ),
 			c = (t?t.toUpperCase().replace(/[^A-Z0-9\_]+/ig,''):null);
 		
 		this.tabs_length++;
 		
 		// Same name can't exist elsewhere must not be null
-		if( !t || t.length==0 ) return;
+		if( !t || t.length===0 ){
+			return;
+		}
 
 		// Add tab
 		$li = $('li[data-id='+id+']', ol);
 		if($li.length===0){
 			$li = $('<li></li>').prependTo(ol);
-		};
+			$('<option></option>').text(t).val(t).prependTo('#autocomplete');
+		}
 
 		$ul = $('ul[data-id='+id+']', $(ol).parent() );
 		if($ul.length===0){
 			$ul = $('<ul ondragenter="cancelEvent()" ondragover="cancelEvent()" ondrop="nav.EVENTS[\'nav ul drop\'](this)"></ul>').appendTo($('nav.results'));
-		};
-
-		if($(ol).hasClass('searches')&&t==="NEW TAB"){
-			$ul.append(
-				'<div class="placeholder">\
-					<label><input type="radio" name="type" value="" checked/>YouTube Videos</label><br/>\
-					<label><input type="radio" name="type" value="PLAYED:"/>History</label><br/>\
-				</div>');
-				/*
-					<label><input type="radio" name="type" value="WEB:"/>Web</label><br/>\
-					<label><input type="radio" name="type" value="PLAYLIST:"/>Youtube Playlists</label><br/>\
-				*/				
-		} else if(!id||info){
-			$ul.append('<span class="placeholder">'+(info?'<i>'+info+'<\/i>':($(ol).attr("data-placeholder")||''))+'</span>');
 		}
 
 		
 		$ul.attr( "data-id", i ).attr( "data-label", t );
-		$li.attr( "data-id", i ).attr( "data-label", t ).attr( "title", "Click to select, Double click to change label" ).html(t.replace(/ /g,'&nbsp;')+'<span class="remove">X</span>').trigger('click');
+		$li.attr( "data-id", i ).attr( "data-label", t ).attr( "data-time", time ).attr( "title", "Click to select, Double click to change label" ).html(t.replace(/ /g,'&nbsp;')+'<span class="remove"></span>').trigger('click');
 		
 		return $ul;
 	},
@@ -445,24 +493,28 @@ var nav = {
 		var data = [];
 
 		// Special searches
-		if( s.match(/^PLAYED\s*\:/) ){
-			// Search through the played list
-			for(var i=0,x,s='',a=store.playlist.reverse();i<a.length;i++){
-				if(x===a[i]) continue; // dont put two identical items next to one another
-				x = a[i];
-				
-				data.push({
-					id : x, 
-					title : store.videos[x] 
-				});
-			}
-			callback({data:data});
+		if( s.match(/^(PLAYED|STARS)\s*\:/i) ){
+			var a = [];
 
+			if(s.match(/^PLAYED/i)){
+				a = store.playlist;
+			}
+			else if(s.match(/^STARS/i)){
+				a = store.favourites;
+			}
+
+			// Search through the played list
+			$(a).each(function(i,x){
+				data.push({
+					id : x,
+					title : store.videos[x]
+				});
+			});
+
+			data.reverse();
+
+			callback({data:data});
 			return;
-		} else if( s.match(/^PLAYLIST:/) ){
-			// This is a search for playlists with the title
-			// 
-			s = s.replace(/^PLAYLIST:/,'');
 		}
 		// Does the search start with a @
 		else if(s[0]==='@'){
@@ -513,9 +565,9 @@ var nav = {
 			callback({data:data});
 		});
 	},
-	/**
-	 * List navigation
-	 */
+	//
+	// List navigation
+	//
 	next	: function(force){
 		nav.move('next',force);
 	},
@@ -559,11 +611,12 @@ var nav = {
 
 		store.videos[id] = title = (title || store.videos[id]);
 
-		var link = channel({id:id,title:title});
+		var link = channel({id:id,title:title}),
+			fav = store.favourites.indexOf(id) > -1;
 		
 		// Create a list item with an anchor including an image tag which is initally empty.
 		// When the user switches between views then we size the image. And insert its value where we can
-		return '<li>'+(editable?'<span class="remove" title="Remove">X</span>':'')+'<span class="add" title="Add to current playlist">&#43;</span><a href="'+link+'" draggable=true ondragend="nav.EVENTS[\'nav ul li a dragend\']();" title="Click to play, Double Click to playall from here"><img data-src="http://i.ytimg.com/vi/'+id+'/default.jpg"/>'+ title +'</a></li>';
+		return '<li '+ (fav?'class="favourite"':'') +'>'+(editable?'<span class="remove" title="Remove"></span><span class="favourite" title="Favourite"></span>':'')+'<a href="'+link+'" draggable=true ondragend="nav.EVENTS[\'nav ul li a dragend\']();" title="Click to play, Double Click to playall from here"><img data-src="http://i.ytimg.com/vi/'+id+'/default.jpg"/>'+ title +'</a></li>';
 		// !!! IE wont let us dynamically attach any drag events to an element
 	},
 	
@@ -571,7 +624,7 @@ var nav = {
 	getIds : function(s){
 		var a=[];
 		$(s).find('li a').each(function(){
-		   a.push($(this).attr('href'));
+			a.push($(this).attr('href'));
 		});
 		return a;
 	}

@@ -1,9 +1,9 @@
-﻿/**
- * Browser navigation tools 
- *
- * @triggers: toobifyRemote
- * @listens: toobifyState
- */
+﻿//
+// Browser navigation tools
+//
+// @triggers: toobifyRemote
+// @listens: toobifyState
+//
 
 // Only IE 9 on Windows 7 supports this so far.
 // Its in Beta... but we like innovation
@@ -32,7 +32,7 @@ if (("external" in window)&&
 				window.external.msSiteModeAddThumbBarButton('images/toob_prev.ico', "Prev"),
 				window.external.msSiteModeAddThumbBarButton('images/toob_play.ico', "Play/Pause"),
 				window.external.msSiteModeAddThumbBarButton('images/toob_next.ico', "Next")
-			], 
+			],
 			btnStyles = [];
 
 		$(window).bind('toobifyState', function(e,data){
@@ -86,39 +86,78 @@ if (("external" in window)&&
 				if(title){
 					log("Adding "+title+" jumplist");
 					window.external.msSiteModeAddJumpListItem(title, window.location.hash, 'images/toob_play.ico', 'self');
-					window.external.msSiteModeShowJumpList(); 
+					window.external.msSiteModeShowJumpList();
 				}
 			}catch(e){}
 		});
 
-	}	
+	}
 }
 
-else 
+else if("webkitNotifications" in window){
 
-// WEBKIT
-if("webkitNotifications" in window){
-	// Browser supports it :)
-	$('<button>Remote</button>')
-		.appendTo('header div.tools')
-		.click(function(){
-			var notify = function(){
-				window
-					.webkitNotifications
-					.createHTMLNotification('./notify.htm')
-					.show();
-			}
-			if(window.webkitNotifications.checkPermission() != 0){
-				window.webkitNotifications.requestPermission(function(){
-					if(window.webkitNotifications.checkPermission() != 0) return; 
+	// WEBKIT
+	(function(){
+
+		var n;
+
+		// Browser supports it :)
+		var $btn = $('<button>Remote</button>')
+			.appendTo('header div.tools')
+			.click(function(){
+
+				var self = this;
+
+				if(!$(this).toggleClass('active').is('.active')){
+					try{
+						n.cancel();
+					}catch(e){}
+					return;
+				}
+
+
+
+				var close = function(){
+						$(self).removeClass('active');
+					},
+					notify = function(){
+						n = window
+							.webkitNotifications
+							.createHTMLNotification('./notify.htm');
+
+						// Attach event to onclose
+						n.onclose = n.onerror = close;
+
+						// Show
+						n.show();
+					};
+
+				if(window.webkitNotifications.checkPermission() !== 0){
+					window.webkitNotifications.requestPermission(function(){
+						if(window.webkitNotifications.checkPermission() !== 0){
+							close();
+							return;
+						}
+						notify();
+					});
+				}
+				else{
 					notify();
-				});
-			}
-			else{
-				notify();
-			}
+				}
+			});
+
+		// Add script which passes the messages back and forth
+		$.getScript('./notify/rend.js', function(){
+			// Have we already got a messenger open?
+			message.listen('hello', function(data){
+				if(data.reply==='remote'){
+					$btn.addClass('active');
+				}
+			});
+			message.send('hello', {question:'whoareyou'});
 		});
 
-	// Add script which passes the messages back and forth
-	$.getScript('./notify/rend.js');
+
+	})();
 }
+
