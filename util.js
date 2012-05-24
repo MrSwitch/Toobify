@@ -118,52 +118,6 @@ function log() {
 	}
 }
 
-/*************************************************
- * MODAL
- *************************************************/
-(function($){
-
-	// Open up a modal window
-	$.modal = function(title,content){
-		// Do the modal items exist?
-		if($('div.modal-bg').length !== 0){
-			$('.modal-close').trigger('click');
-		}
-
-		var $m = $('<iframe class="modal-bg"></iframe>'+
-				'<div class="modal-bg"></div>'+
-				'<div class="modal"><button class="modal-close">&#10005;</button><h2>'+title+'</h2><div></div></div>')
-				.hide()
-				.appendTo('body')
-				.fadeIn()
-				.bind('close', function(){
-					$m.fadeOut('fast', function(){
-							$(this).remove();
-						});
-				})
-				.filter(".modal-bg")
-				.add(".modal-close")
-					.click(function(){
-						$m.trigger('close');
-					})
-				.end().end()
-				.find('div')
-					.html(content)
-				.end();
-	
-
-		
-		/**
-		$m.filter('.modal').hide().fadeIn('fast').animate({
-			width : "90%",
-			left : "5%",
-			height : "90%",
-			top : "5%"
-		},'fast');
-		*/
-	};
-})(jQuery);
-
 
 //
 // Add many live events at once
