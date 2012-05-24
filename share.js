@@ -14,7 +14,7 @@
 	$(window).bind('share', function(e,label,link){
 		link  = (window.location.href.replace(/[\#\?].*/,'') + link);
 
-		var s = $('<div><span style="font-size:1.3em">Via: </span> </div>').share('Checkout my playlist "' + label + '"',link);
-		$.modal('Share your playlist: <a href="' + link + '" target=_blank>'+label+'</a>', s);
+		var s = $('<div></div>').share('Checkout my playlist "' + label + '"',link);
+		$('<div style="max-width:450px;"><h2>Share your playlist, <q>'+label+'</q></h2><p><input type="text" value="' + link + '" /></p></div>').append(s).alert();
 	});
 })(jQuery);
