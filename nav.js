@@ -115,15 +115,21 @@ var nav = {
 			change("/");
 		},
 		// Edit Tabs
-		'nav.search ul li:not(.add) selectstart' : function(){
+		'nav.search ul li:not(.add) selectstart' : function(e){
+			e.preventDefault();
 			return false;
 		},
-		'nav.search ul li:not(.add) dblclick' : function(){
-			var t = prompt("What do you want to call this tab?", $(this).text().replace(/X$/,'') );
+		'nav.search ul li:not(.add) dblclick' : function(e){
+			e.preventDefault();
+
+			var li = this;
+
+			$("<p>What do you want to call this bucket?</p>").prompt( $(this).text(), function(t){
+				if( !t || t.length===0 ){ return; }
+				$(li).text(t);
+				$(window).trigger('savetabs');
+			});
 			
-			if( !t || t.length===0 ){ return; }
-			nav.tab( {title : t, id:$(this).attr('data-id')},  $(this).parent() );
-			$(window).trigger('savetabs');
 			return false;
 		},
 
