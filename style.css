@@ -273,7 +273,8 @@ nav{
 		left: 0;
 	}
 	.touch nav ul{
-		-webkit-overflow-scrolling:auto;	
+		overflow: scroll;
+		-webkit-overflow-scrolling:touch;
 	}
 
 		nav ul li {
