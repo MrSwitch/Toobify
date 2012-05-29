@@ -272,6 +272,10 @@ nav{
 		right: 0;
 		left: 0;
 	}
+	.touch nav ul{
+		-webkit-overflow-scrolling:touch;	
+	}
+
 		nav ul li {
 			margin:0 -10px;
 			padding:2px 10px;
