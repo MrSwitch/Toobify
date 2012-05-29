@@ -273,7 +273,6 @@ nav{
 		left: 0;
 	}
 	.touch nav ul{
-		overflow: scroll;
 		-webkit-overflow-scrolling:touch;
 	}
 
