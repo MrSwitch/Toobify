@@ -102,7 +102,7 @@ else if("webkitNotifications" in window){
 		var n;
 
 		// Browser supports it :)
-		var $btn = $('<button>Remote</button>')
+		var $btn = $('<button data-icon="&#x21f2;"></button>')
 			.appendTo('header div.tools')
 			.click(function(){
 

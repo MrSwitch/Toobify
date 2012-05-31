@@ -1,0 +1,57 @@
+@font-face {
+	font-family: 'IcoMoon';
+	src: url('IcoMoon.eot');
+	src: url('IcoMoon.eot?#iefix') format('embedded-opentype'),
+		url('IcoMoon.svg#IcoMoon') format('svg'),
+		url('IcoMoon.woff') format('woff'),
+		url('IcoMoon.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+
+/* Use the following CSS code if you want to use data attributes for inserting your icons */
+[data-icon]:before {
+	font-family: 'IcoMoon';
+	content: attr(data-icon);
+	speak: none;
+}
+
+/* Use the following CSS code if you want to have a class per icon */
+[class^="icon-"]:before, [class*=" icon-"]:before {
+	font-family: 'IcoMoon';
+	font-style: normal;
+	speak: none;
+}
+.icon-share:before {
+	content: "\2764";
+}
+.icon-cog:before {
+	content: "\2699";
+}
+.icon-link:before {
+	content: "\0023";
+}
+.icon-out:before {
+	content: "\2698";
+}
+.icon-remove:before {
+	content: "\2716";
+}
+.icon-export:before {
+	content: "\21f2";
+}
+.icon-email:before {
+	content: "\2709";
+}
+.icon-add:before {
+	content: "\2631";
+}
+.icon-grid:before {
+	content: "\25a6";
+}
+.icon-list:before {
+	content: "\2630";
+}
+.icon-retweet:before {
+	content: "\21bb";
+}
