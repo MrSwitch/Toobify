@@ -16,7 +16,7 @@ body{
 	min-height:100%;
 	background:#1b1b1b;
 	font-family:'Molengo', Arial, Helvetica, sans-serif;
-	color:white;
+	color:gray;
 	position:fixed;
 	font-size:12px;
 	bottom:0;
@@ -85,14 +85,10 @@ footer{
 	left:0;
 	right:0;
 	padding-left:20px;
-	color:gray;
 }
-	footer a{
-		color:white;
+	footer img{
+		vertical-align:middle;
 	}
-		footer img{
-			vertical-align:middle;
-		}
 
 
 
@@ -101,7 +97,7 @@ h1,h2,h3{
 }
 
 a{
-	color:gold;
+	color:inherit;
 }
 
 button,
@@ -123,7 +119,7 @@ button,
 	-moz-border-radius:3px;
 	border-radius:3px;
 	padding:3px 6px;
-	color:white;/*IE*/
+	color:gray;/*IE*/
 	color:rgba(255,255,255,0.5);
 	-webkit-user-select:none;
 	-moz-user-select:none;
@@ -177,7 +173,6 @@ div.tools{
 	}
 
 		div.tools button.share span.count{
-			color:white;
 			font-size:0.9em;
 			margin-top:10px;
 			position:absolute;
@@ -246,7 +241,6 @@ nav{
 		text-align:left;
 		/*border:1px solid black;*/
 		width:auto;
-		color:white;
 		/*-webkit-transition: 0.3s linear;*/
 		margin:0 10px;
 		padding:10px;
@@ -282,15 +276,12 @@ nav{
 			border-bottom: 1px solid #292929;
 			border-top: 1px solid #3a3a3a;
 			-webkit-transition: 0.3s linear;
-			color:gray;
 			overflow:hidden;
 			list-style:none;
 			text-overflow:ellipsis;
 		}
 			nav ul li a {
-				color:gray;
 				overflow:hidden;
-				
 				white-space:nowrap;
 			}
 			nav ul li a:visited {
@@ -319,6 +310,7 @@ nav{
 			color:white;
 		}
 			nav ul li:hover a {
+				color:inherit;
 			}
 
 		nav ul li.selected{
@@ -369,36 +361,6 @@ nav{
 					content : '\2605';
 				}
 
-		/**
-		 * Placeholders
-		 */
-		nav ul > i{
-			clear:both;
-		}
-		nav ul .placeholder{
-			color:#1B1B1B;
-			clear:both;
-			font-size:1.3em;
-			font-weight:bold;
-			display:block;
-		}
-		
-		nav ul div.placeholder{
-			opacity:0.3;
-			margin:auto;
-			width:150px;
-			font-size:1em;
-		}
-			nav ul div.placeholder label{
-				color:white;
-				border-radius:10px;
-				padding:10px;
-				background-color:#1b1b1b;
-				display:block;
-				box-shadow:2px 2px 5px black;
-				-webkit-box-shadow:2px 2px 5px black;
-				cursor:pointer;
-			}
 	/**
 	 * Change view controls
 	 */
@@ -429,7 +391,6 @@ nav{
 			display:inline-block;
 			vertical-align:top;
 			margin:0 5px;
-			color:gray;
 			overflow:hidden;
 			white-space:normal;
 			-webkit-transition: 0.3s linear;
@@ -488,7 +449,7 @@ nav ul ~ select{
 	background:rgba(0,0,0,0.1);
 	border:0;
 	padding:2px;
-	color:inherit;
+	color:gray;
 }
 nav ul ~ select option{
 }
