@@ -169,7 +169,7 @@ var toob = {
 			var href = $('nav.results ul li.selected a').attr('href');
 
 			// then play the next one
-			if( ( href && (channel(href).id === channel().id) ) && $('nav.results li.selected').next().length ){
+			if( ( href && (channel(href).id === channel().id) ) && $('button.continuous').is('.active') && $('nav.results li.selected').next().length ){
 				nav.next();
 
 				return;

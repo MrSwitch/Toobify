@@ -9,6 +9,9 @@ var nav = {
 	// REMOTE
 	state	: false,
 
+	// Search list
+	$ol : $('nav.search ul'),
+
 	init : function(){
 
 		// Play History
@@ -43,14 +46,12 @@ var nav = {
 		$.live(nav.EVENTS);
 
 
-		// TABS
-		var $ol = $('nav.search ul');
 		
 		store.tabs.reverse();
 
 		$(store.tabs).each(function(i,o){
 			if(!o) return;
-			var ul = nav.tab(o,$ol);
+			var ul = nav.tab(o);
 			if(!o.list){
 				// Run the search and populate the tab
 				$(ul).trigger('search');
@@ -83,7 +84,7 @@ var nav = {
 		// Has the user passed in a query?
 		if(channel().q){
 			// Create a new tab with the search results
-			var ul = nav.tab({title:channel().label || channel().q}, $ol ),
+			var ul = nav.tab({title:channel().label || channel().q} ),
 				q = channel().q || channel().label;
 
 			nav.search(q.replace(/\|/g,' | '), ul);
@@ -124,9 +125,9 @@ var nav = {
 
 			var li = this;
 
-			$("<p>What do you want to call this bucket?</p>").prompt( $(this).text(), function(t){
-				if( !t || t.length===0 ){ return; }
-				$(li).text(t);
+			$("<p>What do you want to call this bucket?</p>").prompt( $(this).text(), function(e){
+				if( !e.response || e.response.length===0 ){ return; }
+				$(li).text(e.response);
 				$(window).trigger('savetabs');
 			});
 			
@@ -170,7 +171,7 @@ var nav = {
 			// remove the text
 			$('input', this).val('');
 
-			var $ul = nav.tab({title:s}, $('nav.search ul').get(0));
+			var $ul = nav.tab({title:s});
 
 			// for pagination
 			if(s)store.queries.push(s);
@@ -252,7 +253,7 @@ var nav = {
 				$ul.append(li);
 			}
 			else{
-				var ul = nav.tab({title:this.value},$(this).parents('nav').find('ul'));
+				var ul = nav.tab({title:this.value});
 				// Run the search and populate the tab
 				$(ul).trigger('search');
 			}
@@ -273,8 +274,12 @@ var nav = {
 			// Remove any selected video
 			nav.anchorplaying = this;
 
+			// Remove any other item which is marked as selected
 			$('nav.results ul li.selected').removeClass('selected');
-			
+
+			// Mark this as selected 
+			$(this).parent('li').addClass('selected');
+
 			// Change HASH
 			change($(this).attr('href'));
 			
@@ -282,7 +287,7 @@ var nav = {
 		},
 		'nav.results ul li a dblclick'	: function(){
 			nav.anchorplaying = this;
-			$(this).parent().addClass('selected');
+			$('button.continuous').toggleClass('active');
 		},
 		'nav.results ul li span.remove click'	: function(e){
 			e.stopPropagation();
@@ -422,6 +427,23 @@ var nav = {
 			// loop through all the items in the list and load the images into the placehlders
 			$(this).parents('nav').find('.selected').trigger('updatelist');
 		},
+
+		//
+		// Auto play items in the list
+		//
+		"nav div.control button.continuous click"	: function(){
+			// change the view
+			$(this).toggleClass('active');
+		},
+
+		"nav div.control button.next click"	: function(){
+			// change the view
+			nav.next();
+		},
+		"nav div.control button.prev click"	: function(){
+			// change the view
+			nav.prev();
+		},
 		
 		//
 		// Share the playlist
@@ -461,40 +483,56 @@ var nav = {
 				});
 		}
 	},
-	tab		: function(opt, ol){
+	tab:	function(opt,i){
 
 		var t = opt.title,
 			id = opt.id,
 			time = opt.time || (new Date()).getTime(),
-			i = (parseInt(id,10) >= 0 ? parseInt(id,10) : this.tabs_length ),
 			c = (t?t.toUpperCase().replace(/[^A-Z0-9\_]+/ig,''):null);
-		
+
 		this.tabs_length++;
+		
+		// Tab Id
+		i = i || (parseInt(id,10) >= 0 ? parseInt(id,10) : this.tabs_length );
 		
 		// Same name can't exist elsewhere must not be null
 		if( !t || t.length===0 ){
 			return;
 		}
 
+		var ol = this.$ol;
+
 		// Add tab
-		$li = $('li[data-id='+id+']', ol);
+		$li = $('li[data-id='+i+']', ol);
 		if($li.length===0){
 			$li = $('<li></li>').prependTo(ol);
 			$('<option></option>').text(t).val(t).prependTo('#autocomplete');
 		}
 
-		$ul = $('ul[data-id='+id+']', $(ol).parent() );
-		if($ul.length===0){
-			$ul = $('<ul ondragenter="cancelEvent()" ondragover="cancelEvent()" ondrop="nav.EVENTS[\'nav ul drop\'](this)"></ul>').appendTo($('nav.results'));
-		}
+		$ul = this.results(opt,i);
 
-		
-		$ul.attr( "data-id", i ).attr( "data-label", t );
-		$li.attr( "data-id", i ).attr( "data-label", t ).attr( "data-time", time ).attr( "title", "Click to select, Double click to change label" ).html(t.replace(/ /g,'&nbsp;')+'<span class="remove"></span>').trigger('click');
+		$li.attr( "data-id", i ).attr( "data-label", t ).attr( "data-time", time ).attr( "title", "Click to select" ).html(t.replace(/ /g,'&nbsp;')+'<span class="remove"></span>').trigger('click');
 		
 		return $ul;
 	},
-	search	: function(s,i,callback){
+	results: function(opt, i){
+
+		//opt
+		opt = opt || {};
+
+		// Vars
+		var i = i || this.tabs_length++,
+			t = opt.title;
+
+		var $ul = $('ul[data-id='+i+']', $(this.$ol).parent() );
+		if($ul.length===0){
+			$ul = $('<ul ondragenter="cancelEvent()" ondragover="cancelEvent()" ondrop="nav.EVENTS[\'nav ul drop\'](this)"></ul>').appendTo($('nav.results'));
+		}
+		$ul.attr( "data-id", i ).attr( "data-label", t );
+
+		return $ul;
+	},
+	search:	function(s,i,callback){
 	
 		var data = [];
 
@@ -585,7 +623,7 @@ var nav = {
 						.removeClass('selected')
 						[move]()
 						.find('a')
-						.trigger('dblclick')
+						.trigger('click')
 						.attr('href');
 
 		if(!href&&nav.anchorplaying){

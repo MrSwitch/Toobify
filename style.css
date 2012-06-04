@@ -295,7 +295,7 @@ nav{
 					margin-right:3px;
 				}
 
-		.touch nav ul li{
+		.touch nav:not(.thumbs) ul li{
 			line-height:2em;
 		}
 				.touch nav ul li a img{
@@ -369,7 +369,7 @@ nav{
 	nav div.control{
 		text-align: right;
 		padding: 0 10px;
-		padding-top: 5px
+		padding-top: 10px
 	}
 
 	/**
