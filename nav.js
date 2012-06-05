@@ -277,7 +277,7 @@ var nav = {
 			// Remove any other item which is marked as selected
 			$('nav.results ul li.selected').removeClass('selected');
 
-			// Mark this as selected 
+			// Mark this as selected
 			$(this).parent('li').addClass('selected');
 
 			// Change HASH
@@ -436,6 +436,15 @@ var nav = {
 			$(this).toggleClass('active');
 		},
 
+		//
+		// Random Play
+		//
+		"nav div.control button.random click"	: function(){
+			// change the view
+			$(this).toggleClass('active');
+		},
+
+
 		"nav div.control button.next click"	: function(){
 			// change the view
 			nav.next();
@@ -521,14 +530,13 @@ var nav = {
 		opt = opt || {};
 
 		// Vars
-		var i = i || this.tabs_length++,
-			t = opt.title;
+		i = (i || this.tabs_length++);
 
 		var $ul = $('ul[data-id='+i+']', $(this.$ol).parent() );
 		if($ul.length===0){
 			$ul = $('<ul ondragenter="cancelEvent()" ondragover="cancelEvent()" ondrop="nav.EVENTS[\'nav ul drop\'](this)"></ul>').appendTo($('nav.results'));
 		}
-		$ul.attr( "data-id", i ).attr( "data-label", t );
+		$ul.attr( "data-id", i ).attr( "data-label", opt.title );
 
 		return $ul;
 	},
@@ -619,22 +627,63 @@ var nav = {
 		nav.move('prev',force);
 	},
 	move	: function (move,force){
-		var href = $('nav.results ul li.selected')
-						.removeClass('selected')
-						[move]()
-						.find('a')
+
+		var $cur = $('nav.results ul li.selected');
+
+		if($cur.length===0){
+			$cur = $(nav.anchorplaying);
+		}
+		if($cur.length===0){
+			return;
+		}
+		// Remove selected
+		$cur.removeClass('selected');
+
+		// Change $cur
+		if( $('button.random').is('.active') ){
+
+			// Does the current increment value exist?
+			if( !this.playlist ){
+				this.playlist = [];
+				this.playlistposition = 0;
+			}
+			// Play position
+			this.playlistposition += ( move ==='next' ? 1 : -1);
+
+			// If we are moving outof playlist bounds
+			if(this.playlistposition<=0 || this.playlistposition>this.playlist.length){
+
+				// Get a random item in the playlist
+				var $sib = $cur.siblings();
+				$cur = $sib.eq(parseInt(($sib.length-1)*Math.random(),10));
+
+				// Is this moving prev?
+				if(this.playlistposition<=0){
+					this.playlist.unshift($cur);
+					this.playlistposition = 0;
+				}
+				else{
+					this.playlist.push($cur);
+					//this.playlistposition = this.playlist.length;
+				}
+			}else{
+				// This could potentially play something which isn't in the list.
+				// But oh well.
+				$cur = this.playlist[this.playlistposition-1];
+			}
+		}
+		else{
+			$cur = $cur[move]();
+		}
+
+		// Get the new Cur
+		var href = $cur.find('a')
 						.trigger('click')
 						.attr('href');
 
-		if(!href&&nav.anchorplaying){
-			href = $(nav.anchorplaying)
-					.parent()
-					[move]()
-					.find('a')
-					.trigger('click')
-					.attr('href');
-		}
+
 		if(!href) return false;
+
 		var hash = href.match(/#.*/);
 		
 		if(hash){
@@ -643,7 +692,6 @@ var nav = {
 		else
 			log("Whoops, the "+move+" item doesn't have a valid value");
 	},
-
 	item : function(id,title,editable,i){
 
 		if(i>=0){

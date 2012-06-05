@@ -12,7 +12,7 @@ if (("external" in window)&&
 	
 	// Add site button
 	if(!window.external.msIsSiteMode()){
-		$('<button title="This adds thumbnail controls to IE9" class="msPinSite">Pin Start</button>')
+		$('<button title="This adds thumbnail controls to IE9" class="msPinSite" data-icon="&#x25c9;"></button>')
 			.appendTo('header div.tools')
 			.find('button')
 			.click(function(){

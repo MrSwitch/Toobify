@@ -118,3 +118,9 @@
 .icon-code:before {
 	content: "\25c7";
 }
+.icon-shuffle:before {
+	content: "\21cb";
+}
+.icon-menu-2:before {
+	content: "\2759";
+}
