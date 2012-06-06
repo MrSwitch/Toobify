@@ -528,7 +528,9 @@ article{
 /**
  * Unique Column
  */
-
+section > *{
+	-webkit-transition:all 1s;
+}
 section nav.search{
 	width:20%;
 }
