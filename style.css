@@ -606,7 +606,11 @@ section article{
 		display:none;
 		overflow:hidden;
 	}
-	section > .active{
+
+	section > *.active,
+	section > nav.search.active,
+	section > article.active,
+	section > nav.results.active{
 		width:100%;
 		position:absolute;
 		height:100%;
@@ -615,6 +619,10 @@ section article{
 		z-index:1;
 		top:0;
 		display:block;
+	}
+
+	button.workspace-back{
+		display:inline-block !important;
 	}
 }
 
@@ -627,6 +635,7 @@ section article{
 		background: rgb(25,25,25);
 		background: rgba(255, 255, 255, 0.1);
 	}
+
 
 
 /**

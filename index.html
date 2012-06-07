@@ -90,7 +90,7 @@
 		<div class="tools"><button class="share" data-icon="&#x2764;" title="Share"></button></div>
 	</header>
 	<section class="frameset inline">
-		<nav class="search" data-framename="Query">
+		<nav class="search active" data-framename="Query">
 			<form class="search" action="#whoops">
 				<input type="search" placeholder="Search" list='autocomplete'/>
 				<button title="Search YouTube">&#9658;</button>
@@ -111,7 +111,7 @@
 			</select>
 		</nav>
 		<nav class="results" data-framename="Search">
-			<div class="control"><button class="workspace-back" style="float:left;">Back</button> <button class="add" data-icon="&#x2631;" title="Add to List" style="float:left;display:none;"></button> <button class="prev" data-icon="&#x25c0;" title="Prev"></button><button class="next" data-icon="&#x25ba;" title="Next"></button> &nbsp; <button class="random" data-icon="&#x21cb;" title="Random Play"></button><button class="continuous" data-icon="&#x21bb;" title="Continuous Play"></button><button data-toggle="thumbs" class="view" data-icon="&#x2317;" title="Thumbnails"></button><button class="share" data-icon="&#x2764;" title="Share Playlist"></button></div>
+			<div class="control"><button class="workspace-back" style="float:left;" onclick="$(this).parents('nav').prev('nav').addClass('active').siblings().removeClass('active')">Back</button> <button class="add" data-icon="&#x2631;" title="Add to List" style="float:left;display:none;"></button> <button class="prev" data-icon="&#x25c0;" title="Prev"></button><button class="next" data-icon="&#x25ba;" title="Next"></button> &nbsp; <button class="random" data-icon="&#x21cb;" title="Random Play"></button><button class="continuous" data-icon="&#x21bb;" title="Continuous Play"></button><button data-toggle="thumbs" class="view" data-icon="&#x2317;" title="Thumbnails"></button><button class="share" data-icon="&#x2764;" title="Share Playlist"></button></div>
 		</nav>
 		<article>
 			<div id="player"></div>

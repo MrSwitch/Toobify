@@ -26,7 +26,7 @@ $.live({
 			$('article').addClass('active').siblings().removeClass('active');
 		}
 		else{
-			$('.frame:first').addClass('active').siblings().removeClass('active');
+			$('.frameset > *:first').addClass('active').siblings().removeClass('active');
 		}
 	}
 });
