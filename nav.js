@@ -514,13 +514,13 @@ var nav = {
 		// Add tab
 		$li = $('li[data-id='+i+']', ol);
 		if($li.length===0){
-			$li = $('<li></li>').prependTo(ol);
+			$li = $('<li onclick="void(0)"></li>').prependTo(ol);
 			$('<option></option>').text(t).val(t).prependTo('#autocomplete');
 		}
 
 		$ul = this.results(opt,i);
 
-		$li.attr( "data-id", i ).attr( "data-label", t ).attr( "data-time", time ).attr( "title", "Click to select" ).html(t.replace(/ /g,'&nbsp;')+'<span class="remove"></span>').trigger('click');
+		$li.attr( "data-id", i ).attr( "data-label", t ).attr( "data-time", time ).attr( "title", "Click to select" ).html(t.replace(/ /g,'&nbsp;')+'<span class="remove" onclick="void(0)"></span>').trigger('click');
 		
 		return $ul;
 	},
@@ -708,7 +708,7 @@ var nav = {
 		
 		// Create a list item with an anchor including an image tag which is initally empty.
 		// When the user switches between views then we size the image. And insert its value where we can
-		return '<li '+ (fav?'class="favourite"':'') +'>'+(editable?'<span class="remove" title="Remove"></span><span class="favourite" title="Favourite"></span>':'')+'<a href="'+link+'" draggable=true ondragend="nav.EVENTS[\'nav ul li a dragend\']();" title="Click to play, Double Click to playall from here"><img data-src="http://i.ytimg.com/vi/'+id+'/default.jpg"/>'+ title +'</a></li>';
+		return '<li '+ (fav?'class="favourite"':'') +'>'+(editable?'<span class="remove" title="Remove" onclick="void(0)"></span><span class="favourite" title="Favourite" onclick="void(0)"></span>':'')+'<a href="'+link+'" draggable=true ondragend="nav.EVENTS[\'nav ul li a dragend\']();" title="Click to play, Double Click to playall from here"><img data-src="http://i.ytimg.com/vi/'+id+'/default.jpg"/>'+ title +'</a></li>';
 		// !!! IE wont let us dynamically attach any drag events to an element
 	},
 	
