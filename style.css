@@ -321,8 +321,11 @@ nav{
 				color:inherit;
 			}
 
-		nav ul li.selected{
-
+		nav:not(.thumbs) ul li.selected{
+			-webkit-transform:translateX(5px);
+			-moz-transform:translateX(5px);
+			-ms-transform:translateX(5px);
+			transform:translateX(5px);
 		}
 			nav ul li.selected,
 			nav ul li.selected a,nav ul li.selected:hover a{
@@ -426,7 +429,7 @@ nav{
 				-webkit-box-shadow: black 2px 2px 10px;
 				-moz-box-shadow: black 2px 2px 10px;
 				box-shadow: black 2px 2px 10px;
-				background-color: #2B2B2B !;
+				background-color: #2B2B2B;
 			}
 				nav.thumbs ul li a{
 					white-space:normal;
