@@ -75,6 +75,7 @@ var toob = {
 		log(p);
 
 		if(!p||!p.id){
+			ytvideo = null;
 			$('article').html('<div id="player"></div>');
 			return false;
 		}
