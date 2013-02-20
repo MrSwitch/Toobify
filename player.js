@@ -107,15 +107,9 @@ var toob = {
 
 			}
 			// Else have we loaded the Javascript library yet?
-			else if(!document.getElementById('yt_player_api')){
+			else {
 				// lets try the chromeless player
 				log('Loading the HTML5 player');
-				// 2. This code loads the IFrame Player API code asynchronously.
-				var tag = document.createElement('script');
-				tag.src = "http://www.youtube.com/player_api";
-				tag.id = 'yt_player_api';
-				var firstScriptTag = document.getElementsByTagName('script')[0];
-				firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
 				// 3. This function creates an <iframe> (and YouTube player)
 				//    after the API code downloads.
@@ -131,6 +125,19 @@ var toob = {
 						}
 					});
 				};
+
+				// 2. This code loads the IFrame Player API code asynchronously.
+				if(!document.getElementById('yt_player_api')){
+					var tag = document.createElement('script');
+					tag.src = "http://www.youtube.com/player_api";
+					tag.id = 'yt_player_api';
+					var firstScriptTag = document.getElementsByTagName('script')[0];
+					firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+				}
+				else{
+					window.onYouTubePlayerAPIReady();
+				}
+
 			}
 
 		} else if( p.id !== ytvideo.getVideoUrl().match(/[\?\&]v=([^&]+)/)[1] ){
