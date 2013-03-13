@@ -23,10 +23,10 @@ $.live({
 		// this gets triggered when we get a hasnchange event on the page
 		if(toob.player()){
 			// Add active class
-			$('article').addClass('active').siblings().removeClass('active');
+			$('article').showFrame();
 		}
 		else{
-			$('.frameset > *:first').addClass('active').siblings().removeClass('active');
+			$('.frameset > *:first').showFrame();
 		}
 	}
 });

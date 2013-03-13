@@ -54,7 +54,7 @@
 		LikeModernizr('ontouchstart' in window, 'touch');
 
 		// Add the libraries
-		var local = ( /^(local\.|drew.local)/.test(window.location.host) ? 0 : 1);
+		var local = ( /^(local\.|drew.local|192.168.)/.test(window.location.host) ? 0 : 1);
 		function loadScript(a){
 			for(var i=0,s;i<a.length;i++){
 				if(a[i].match(/.css$/)){
@@ -84,38 +84,41 @@
 
 </head>
 <body>
+	<div class="frame-nav"><button class="toggle-frame-nav">Close</button></div>
 	<header>
-		<div class="logo">Toobify</div>
-		<h1></h1>
+		<button class="toggle-frame-nav" data-icon="&#x2630;"></button>
+		<div class="logo">Toobify</div><h1></h1>
 		<div class="tools"><button class="share" data-icon="&#x2764;" title="Share"></button></div>
 	</header>
-	<section class="frameset inline">
-		<nav class="search active" data-framename="Query">
-			<form class="search" action="#whoops">
-				<input type="search" placeholder="Search" list='autocomplete'/>
-				<button title="Search YouTube">&#9658;</button>
-			</form>
-			<ul></ul>
-			<select class="options">
-				<option value="" disabled selected style="display:none;">options</option>
-				<optgroup label="sort">
-					<option value="a-z">A-Z</option>
-					<option value="z-a">Z-A</option>
-					<option value="latest">Latest</option>
-					<option value="oldest">Oldest</option>
-				</optgroup>
-				<optgroup label="show">
-					<option value="played:">Played</option>
-					<option value="stars:">Stars</option>
-				</optgroup>
-			</select>
-		</nav>
-		<nav class="results" data-framename="Search">
-			<div class="control"><button class="workspace-back" style="float:left;" onclick="$(this).parents('nav').prev('nav').addClass('active').siblings().removeClass('active')">Back</button> <button class="add" data-icon="&#x2631;" title="Add to List" style="float:left;display:none;"></button> <button class="prev" data-icon="&#x25c0;" title="Prev"></button><button class="next" data-icon="&#x25ba;" title="Next"></button> &nbsp; <button class="random" data-icon="&#x21cb;" title="Random Play"></button><button class="continuous" data-icon="&#x21bb;" title="Continuous Play"></button><button data-toggle="thumbs" class="view" data-icon="&#x2317;" title="Thumbnails"></button><button class="share" data-icon="&#x2764;" title="Share Playlist"></button></div>
-		</nav>
-		<article>
-			<div id="player"></div>
-		</article>
+	<section>
+		<div class="frameset">
+			<nav class="search active" data-framename="Search">
+				<form class="search" action="#whoops">
+					<input type="search" placeholder="Search" list='autocomplete'/>
+					<button title="Search YouTube">&#9658;</button>
+				</form>
+				<ul></ul>
+				<select class="options">
+					<option value="" disabled selected style="display:none;">options</option>
+					<optgroup label="sort">
+						<option value="a-z">A-Z</option>
+						<option value="z-a">Z-A</option>
+						<option value="latest">Latest</option>
+						<option value="oldest">Oldest</option>
+					</optgroup>
+					<optgroup label="show">
+						<option value="played:">Played</option>
+						<option value="stars:">Stars</option>
+					</optgroup>
+				</select>
+			</nav>
+			<nav class="results" data-framename="Results">
+				<div class="control"><button class="workspace-back" style="float:left;" onclick="$('nav.search').showFrame();">Back</button> <button class="add" data-icon="&#x2631;" title="Add to List" style="float:left;display:none;"></button> <button class="prev" data-icon="&#x25c0;" title="Prev"></button><button class="next" data-icon="&#x25ba;" title="Next"></button> &nbsp; <button class="random" data-icon="&#x21cb;" title="Random Play"></button><button class="continuous" data-icon="&#x21bb;" title="Continuous Play"></button><button data-toggle="thumbs" class="view" data-icon="&#x2317;" title="Thumbnails"></button><button class="share" data-icon="&#x2764;" title="Share Playlist"></button></div>
+			</nav>
+			<article data-framename="Playing" class="flex">
+				<div id="player"></div>
+			</article>
+		</div>
 	</section>
 	<footer>
 		Hand typed by <a target="_blank" href="http://twitter.com/#!Mr_Switch"><img src="http://www.gravatar.com/avatar/20043d5ade315f3c25d13b18dba95bc4.png" height="20"/> #mr_switch</a> 

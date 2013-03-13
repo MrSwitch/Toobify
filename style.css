@@ -12,6 +12,9 @@ a img{
 	border:none;
 }
 
+html{
+	font-size:12px;	
+}
 body{
 	margin:0;
 	padding:0;
@@ -21,9 +24,9 @@ body{
 	font-family:'Molengo', Arial, Helvetica, sans-serif;
 	color:gray;
 	position:fixed;
-	font-size:12px;
 	bottom:0;
 	height:100%;
+	line-height: 2rem;
 }
 
 .touch body{
@@ -50,17 +53,20 @@ header{
 	background-color:#333;
 	padding:0;
 	margin:0;
-	margin-left:10px;
-	position:fixed;
-	width:100%;
+	margin-left:50px;
+	position:relative;
+/*	width:100%; */
 	z-index:1000;
-	font-size:15px;
-	text-shadow:black 0 0 10px;
+	font-size:1.2rem;
 	color:white;
 	-webkit-box-shadow:black 0 0 10px;
 	-moz-box-shadow:black 0 0 10px;
 	box-shadow:black 0 0 10px;
 }
+	header .toggle-frame-nav{
+		margin-left:-40px;
+		position:absolute;
+	}
 	header div.logo{
 		display:inline-block;
 		padding:5px 10px;
@@ -76,7 +82,7 @@ header{
 		display:block;
 		position:absolute;
 		top:0;
-		left:70px;
+		left:80px;
 		right:80px;
 		margin:0;
 		overflow:hidden;
@@ -85,7 +91,7 @@ header{
 	}
 
 footer{
-	line-height:2em;
+	line-height:1.5rem;
 	bottom:0;
 	position:absolute;
 	left:0;
@@ -127,19 +133,19 @@ button,
     box-shadow: rgba(255, 255, 255, 0.1) 0 1px inset,
                 rgba(0, 0, 0, 0.4) 0px 1px 1px;
 	
-	text-shadow:rgba(0, 0, 0, 0.4) 0px 1px;
+	text-shadow:inherit;
 
 	-webkit-border-radius:3px;
 	-moz-border-radius:3px;
 	border-radius:3px;
-	padding:3px 6px;
+	padding:8px 10px;
 	color:gray;/*IE*/
 	color:rgba(255,255,255,0.5);
 	-webkit-user-select:none;
 	-moz-user-select:none;
 	user-select:none;
 	font-family:"Lucida Grande", Arial, sans-serif;
-	font-size:1em;
+	font-size:1.2rem;
 	cursor:pointer;
 	vertical-align: middle;
 }
@@ -177,8 +183,6 @@ div.tools{
 	div.tools button{
 		display:inline-block;
 		margin-right:10px;
-		margin-top:4px;
-		padding:2px 5px 0 5px;
 /*
 		background-color:#1b1b1b;
 		-moz-border-radius:5px;
@@ -199,11 +203,13 @@ div.tools{
 
 section{
 	position:absolute;
-	top:27px;
+	top:33px;
 	bottom:2em;
 	overflow:hidden;
+	left:0;
+	right: 0;
 }
-	section > *{
+	.frameset > *{
 		position:relative;
 		display:inline-block;
 		overflow:hidden;
@@ -233,9 +239,9 @@ nav{
 		border-bottom:none;
 		*/width:auto;
 		margin:0 10px;
-		padding-top:4px;
+		margin-top:6px;
 		position:relative;
-		height:35px;
+		height:33px;
 	}
 		nav form input{
 			position: absolute;
@@ -248,14 +254,17 @@ nav{
 			padding:2px;
 			left:3px;
 			right:40px;
+			top:0;
+			bottom:0;
 			-webkit-appearance:none;
 			-moz-appearance:none;
 		}
 		nav form button{
 			width: 35px;
 			position: absolute;
-			right: 3px;
-			bottom: 1px;
+			right: 0;
+			top:0;
+			bottom: 0;
 		}
 
 	nav > ul{
@@ -305,9 +314,9 @@ nav{
 			padding:2px 10px;
 			border-bottom: 1px solid #292929;
 			border-top: 1px solid #3a3a3a;
-			-ms-transition: 0.3s linear;
-			-moz-transition: 0.3s linear;
-			-webkit-transition: 0.3s linear;
+			-ms-transition: all 0.3s linear;
+			-moz-transition: all 0.3s linear;
+			-webkit-transition: all 0.3s linear;
 			transition: 0.3s linear;
 			overflow:hidden;
 			list-style:none;
@@ -328,9 +337,6 @@ nav{
 					margin-right:3px;
 				}
 
-		.touch nav:not(.thumbs) ul li{
-			line-height:2em;
-		}
 				.touch nav ul li a img{
 					width:36px;
 					vertical-align:middle;
@@ -373,8 +379,8 @@ nav{
 					-webkit-border-radius:10px;
 					border:1px solid transparent;
 					border-radius:10px;
-					font-size:0.9em;
-					line-height:1em;
+					font-size:0.9rem;
+					line-height:1rem;
 				}
 				nav ul li:hover span,
 				.touch nav ul li span {
@@ -404,7 +410,7 @@ nav{
 	nav div.control{
 		text-align: right;
 		padding: 0 10px;
-		padding-top: 10px
+		padding-top: 6px
 	}
 
 	/**
@@ -428,8 +434,7 @@ nav{
 			margin:0 5px;
 			overflow:hidden;
 			white-space:normal;
-			-webkit-transition: 0.3s linear;
-			transition: 0.3s linear;
+			line-height: 1rem;
 			/*
 			background:#1b1b1b -moz-linear-gradient(
 				90deg, 
@@ -442,6 +447,7 @@ nav{
 			background-position:bottom;
 			background-repeat:no-repeat;
 			*/
+
 		}
 			nav.thumbs ul li:nth-child(even){
 				background-color:#2e2e2e;
@@ -556,7 +562,7 @@ article{
 /**
  * Unique Column
  */
-section > *{
+.frameset > *{
 	-webkit-transition:all 1s;
 }
 section nav.search{
@@ -574,7 +580,7 @@ section nav.results{
  	section nav:empty:after,
  	section nav ul:empty:after{
  		content:'Loading...';
- 		font-size:3em;
+ 		font-size:2.2rem;
  		color:rgba(255,255,255,0.1);
 	}
 
@@ -596,7 +602,7 @@ section article{
 	}
  	#player:empty:after{
  		content:"\2190  search, select, play";
- 		font-size:3em;
+ 		font-size:2.2rem;
  		position:absolute;
  		top:45%;
  		left:0;
@@ -609,20 +615,19 @@ section article{
 
 /* iPads (portrait) ----------- */
 @media only screen and (orientation : portrait) {
-	section nav,
-	section article,
-	section > *{
+	.frameset nav,
+	.frameset article{
 		height:50%;
 	}
 
-	section article{
+	.frameset article{
 		width:100%;
 		height:50%;
 	}
-	section nav.search{
+	.frameset nav.search{
 		width:40%;
 	}
-	section nav.results{
+	.frameset nav.results{
 		width:60%;
 	}
 }
@@ -630,25 +635,6 @@ section article{
 /* iPads (portrait) ----------- */
 @media only screen and (max-width : 600px) {
 	/** Mobile view */
-	section > *{
-		display:none;
-		overflow:hidden;
-	}
-
-	section > *.active,
-	section > nav.search.active,
-	section > article.active,
-	section > nav.results.active{
-		width:100%;
-		position:absolute;
-		height:100%;
-		left:0;
-		right:0;
-		z-index:1;
-		top:0;
-		display:block;
-	}
-
 	button.workspace-back{
 		display:inline-block !important;
 	}
@@ -683,4 +669,16 @@ section article{
 .plugin form h2 q{
 	color:gold;
 	display:inline-block;
+}
+
+
+
+/**
+ * Frame Nav
+ */
+.frame-nav{
+	font-size:15px;
+}
+.frame-nav > a{
+	padding-top:20px;
 }

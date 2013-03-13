@@ -77,11 +77,7 @@ var nav = {
 		$('nav > ul[data-id='+id+'] div button.view').trigger('click');
 		
 		// remove all 'active' state from the frames
-		$('nav.active').removeClass('active');
-
-		// remove all 'active' state from the frames
-		$('nav.search').addClass('active');
-		
+		$('nav.search').showFrame();
 
 
 		// Has the user passed in a query?
@@ -113,7 +109,7 @@ var nav = {
 				.siblings('.selected')
 				.removeClass('selected');
 
-			$(this).parents('.frameset > *').next().addClass('active').siblings().removeClass('active');
+			$("nav.results").showFrame();
 		},
 		'header .logo click' : function(){
 			change("/");
@@ -183,7 +179,7 @@ var nav = {
 			$($ul).trigger('search');
 
 			// Add active class
-			$(this).parents('.frameset > *').next().addClass('active').siblings().removeClass('active');
+			$("nav.results").showFrame();
 			
 			return false;
 		},
