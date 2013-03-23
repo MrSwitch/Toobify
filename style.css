@@ -243,6 +243,10 @@ nav{
 		position:relative;
 		height:33px;
 	}
+	.mobile nav > form{
+		margin-left:0;
+		margin-right:0;
+	}
 		nav form input{
 			position: absolute;
 			background-color:#636365;
@@ -305,6 +309,10 @@ nav{
 		right: 0;
 		left: 0;
 	}
+	.mobile nav ul{
+		margin:0;
+	}
+
 	.touch nav ul{
 		-webkit-overflow-scrolling:touch;
 	}
