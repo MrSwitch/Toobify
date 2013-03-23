@@ -318,13 +318,15 @@ nav{
 			-moz-transition: all 0.3s linear;
 			-webkit-transition: all 0.3s linear;
 			transition: 0.3s linear;
-			overflow:hidden;
-			list-style:none;
-			text-overflow:ellipsis;
+			position: relative;
 		}
 			nav ul li a {
 				overflow:hidden;
 				white-space:nowrap;
+				width: 100%;
+				overflow: hidden;
+				text-overflow:ellipsis;
+				display: inline-block;
 			}
 			nav ul li a:visited {
 				color:darkgray;
@@ -332,14 +334,9 @@ nav{
 				/* images small by default */
 				nav ul li a img{
 					display:inline-block;
-					width:24px;
-					vertical-align:middle;
-					margin-right:3px;
-				}
-
-				.touch nav ul li a img{
 					width:36px;
 					vertical-align:middle;
+					margin-right:3px;
 				}
 
 
@@ -350,13 +347,16 @@ nav{
 		}
 			nav ul li:hover a {
 				color:inherit;
+				padding-right:20px;
 			}
 
 		nav:not(.thumbs) ul li.selected{
+			/*
 			-webkit-transform:translateX(5px);
 			-moz-transform:translateX(5px);
 			-ms-transform:translateX(5px);
 			transform:translateX(5px);
+			*/
 		}
 			nav ul li.selected,
 			nav ul li.selected a,nav ul li.selected:hover a{
@@ -368,9 +368,10 @@ nav{
 				}
 				
 				nav ul li span{
-					float:right;
 					display:none;
-					position:relative;
+					position:absolute;
+					right:15px;
+					top:0;
 					font-family:arial;
 					cursor:pointer;
 					padding:0 2px;
@@ -382,6 +383,10 @@ nav{
 					font-size:0.9rem;
 					line-height:1rem;
 				}
+				nav ul li span + span{
+					right:0;
+				}
+
 				nav ul li:hover span,
 				.touch nav ul li span {
 					border:1px solid rgba(0,0,0,0.3);
@@ -464,6 +469,7 @@ nav{
 			}
 				nav.thumbs ul li a{
 					white-space:normal;
+					padding-right: 0;
 				}
 					nav.thumbs ul li a img{
 						clear:both;
