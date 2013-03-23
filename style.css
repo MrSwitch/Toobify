@@ -646,14 +646,6 @@ section article{
 	}
 }
 
-/* iPads (portrait) ----------- */
-@media only screen and (max-width : 600px) {
-	/** Mobile view */
-	button.workspace-back{
-		display:inline-block !important;
-	}
-}
-
 
 /**
  * Override .resize buttons in the
