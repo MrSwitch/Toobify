@@ -3,6 +3,7 @@
 <head>
 	<title>Toobify</title>
 	<link href="favicon.ico" rel="SHORTCUT ICON" />
+	<meta name="charset" content="utf8" />
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/> 
 
@@ -115,13 +116,11 @@
 			<nav class="results" data-framename="Results">
 				<div class="control"><button class="add" data-icon="&#x2631;" title="Add to List" style="float:left;display:none;"></button> <button class="prev" data-icon="&#x25c0;" title="Prev"></button><button class="next" data-icon="&#x25ba;" title="Next"></button> &nbsp; <button class="random" data-icon="&#x21cb;" title="Random Play"></button><button class="continuous" data-icon="&#x21bb;" title="Continuous Play"></button><button data-toggle="thumbs" class="view" data-icon="&#x2317;" title="Thumbnails"></button><button class="share" data-icon="&#x2764;" title="Share Playlist"></button></div>
 			</nav>
-			<article data-framename="Playing" class="flex">
-				<div style="height:100%;"><div id="player"></div></div>
-			</article>
+			<article data-framename="Playing" class="flex" style="overflow:hidden;"><div style="height:100%;"><div id="player"></div></div></article>
 		</div>
 	</section>
 	<footer>
-		Hand typed by <a target="_blank" href="http://twitter.com/#!Mr_Switch"><img src="http://www.gravatar.com/avatar/20043d5ade315f3c25d13b18dba95bc4.png" height="20"/> #mr_switch</a> 
+		<a target="_blank" href="http://adodson.com" title="Andrew Dodson">Crafted by <img alt="Andrew Dodson" src="http://www.gravatar.com/avatar/20043d5ade315f3c25d13b18dba95bc4.png" height="20"/></a> 
 	</footer>
 
 	<datalist id="autocomplete"></datalist>
