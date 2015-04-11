@@ -707,7 +707,7 @@ var nav = {
 		
 		// Create a list item with an anchor including an image tag which is initally empty.
 		// When the user switches between views then we size the image. And insert its value where we can
-		return '<li '+ (fav?'class="favourite"':'') +'>'+(editable?'<span class="favourite" title="Favourite" onclick="void(0)"></span><span class="remove" title="Remove" onclick="void(0)"></span>':'')+'<a href="'+link+'" draggable=true ondragend="nav.EVENTS[\'nav ul li a dragend\']();" title="Click to play, Double Click to playall from here"><img data-src="http://i.ytimg.com/vi/'+id+'/default.jpg"/>'+ title +'</a></li>';
+		return '<li '+ (fav?'class="favourite"':'') +'>'+(editable?'<span class="favourite" title="Favourite" onclick="void(0)"></span><span class="remove" title="Remove" onclick="void(0)"></span>':'')+'<a href="'+link+'" draggable=true ondragend="nav.EVENTS[\'nav ul li a dragend\']();" title="Click to play, Double Click to playall from here"><img data-src="https://i.ytimg.com/vi/'+id+'/default.jpg"/>'+ title +'</a></li>';
 		// !!! IE wont let us dynamically attach any drag events to an element
 	},
 	
