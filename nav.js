@@ -572,7 +572,7 @@ var nav = {
 			// We should update this... but instead we're going to ignore it.there are no more results
 			if(i<100&&i>0) return;
 			// This is a twitter search
-			$.getJSON('http://api.twitter.com/1/statuses/user_timeline.json?screen_name='+s.replace(/@/,'')+'&count=100&include_rts=true&clientsource=CUSTOM&callback=?', function(json){
+			$.getJSON('https://proxy-server.herokuapp.com/https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name='+s.replace(/@/,'')+'&count=100&include_rts=true&clientsource=CUSTOM&callback=?', function(json){
 
 				$.each( json, function(i,o){
 					if(!o.text) return;
