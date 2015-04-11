@@ -602,7 +602,7 @@ var nav = {
 			s = "standardfeeds/top_rated?v=2";
 		}
 
-		$.getJSON( 'http://gdata.youtube.com/feeds/api/' + s + '&alt=json-in-script&max-results=50&start-index='+(i||1)+'&callback=?', function(json){
+		$.getJSON( 'https://gdata.youtube.com/feeds/api/' + s + '&alt=json-in-script&max-results=50&start-index='+(i||1)+'&callback=?', function(json){
 
 			$.each( json.feed.entry, function(i,o){
 				//if(typeof( json.feed.entry[x]['app$control'] ) === 'object') continue; // this video is restricted... its better not to show them i feel.

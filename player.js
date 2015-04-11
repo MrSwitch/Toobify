@@ -82,7 +82,7 @@ var toob = {
 
 		$('h1').html((document.title = p.title));
 		
-		$.getJSON('http://gdata.youtube.com/feeds/api/videos/'+p.id+'?v=2&alt=json-in-script&callback=?', function(json){
+		$.getJSON('https://gdata.youtube.com/feeds/api/videos/'+p.id+'?v=2&alt=json-in-script&callback=?', function(json){
 			console.log(json);
 			var img = json['entry']['media$group']['media$thumbnail'];
 			$('meta[name=image_src]').attr('content',img.length>2?img[2]['url']:img[0]['url']);
@@ -95,7 +95,7 @@ var toob = {
 
 				log('Loading SWF');
 
-				swfobject.embedSWF('http://www.youtube.com/v/'+ p.id +'?color1=0x000000&color2=0x000000&version=3&enablejsapi=1&playerapiid=ytplayer',
+				swfobject.embedSWF('https://www.youtube.com/v/'+ p.id +'?color1=0x000000&color2=0x000000&version=3&enablejsapi=1&playerapiid=ytplayer',
 					"player",
 					"100%",
 					"100%",
@@ -129,7 +129,7 @@ var toob = {
 				// 2. This code loads the IFrame Player API code asynchronously.
 				if(!document.getElementById('yt_player_api')){
 					var tag = document.createElement('script');
-					tag.src = "http://www.youtube.com/player_api";
+					tag.src = "https://www.youtube.com/player_api";
 					tag.id = 'yt_player_api';
 					var firstScriptTag = document.getElementsByTagName('script')[0];
 					firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
@@ -193,7 +193,7 @@ var toob = {
 
 			if( (id !== channel().id) ){
 				// The user has changed the video and it is no longer the same as our data.
-				$.getJSON('http://gdata.youtube.com/feeds/api/videos/'+id+'?v=2&alt=json-in-script&callback=?', function(json){
+				$.getJSON('https://gdata.youtube.com/feeds/api/videos/'+id+'?v=2&alt=json-in-script&callback=?', function(json){
 					$('nav.results ul li.selected').removeClass('selected');
 					change({
 						id : id,
