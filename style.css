@@ -259,9 +259,9 @@ nav{
 			margin:0;
 			bottom:3px;
 			padding:2px;
-			left:3px;
-			right:40px;
+			left:0;
 			top:0;
+			width:calc(100% - 3em);
 			bottom:0;
 			-webkit-appearance:none;
 			-moz-appearance:none;
