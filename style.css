@@ -581,7 +581,7 @@ article{
  * Unique Column
  */
 .frameset > *{
-	-webkit-transition:all 1s;
+	-webkit-transition:all 0s;
 }
 section nav.search{
 	width:20%;
