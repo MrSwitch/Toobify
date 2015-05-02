@@ -148,9 +148,11 @@ var nav = {
 			// loop through all the tabs and build up the tab list
 			$('nav.search ul li').each(function(){
 				var id = parseInt($(this).attr('data-id'),10);
+				var $data = $('nav.results ul[data-id='+id+']');
 				a.push({
 					title	: $(this).attr('data-label'),
-					list	: nav.getIds($('nav.results ul[data-id='+id+']')),
+					list	: nav.getIds($data),
+					next	: $data.attr('data-next'),
 					info	: ($('nav ul[data-id=' + id + '] > i').html()),
 					time	: $(this).attr('data-time')
 				});
@@ -201,7 +203,7 @@ var nav = {
 			var $ul = $(this).addClass('loading');
 
 			// search
-			nav.search($(this).attr('data-label'), $(this).find("li").length, function(r){
+			nav.search($ul.attr('data-label'), $ul.attr('data-next'), function(r){
 
 				$ul.removeClass('loading');
 				
@@ -212,6 +214,7 @@ var nav = {
 				});
 
 				$ul.append(s).trigger('updatelist');
+				$ul.attr('data-next', r.next);
 
 				$(window).trigger('savetabs');
 			});
@@ -539,7 +542,7 @@ var nav = {
 
 		return $ul;
 	},
-	search:	function(s,i,callback){
+	search:	function(s,next,callback){
 	
 		var data = [];
 
@@ -569,8 +572,7 @@ var nav = {
 		}
 		// Does the search start with a @
 		else if(s[0]==='@'){
-			// We should update this... but instead we're going to ignore it.there are no more results
-			if(i<100&&i>0) return;
+
 			// This is a twitter search
 			$.getJSON('https://proxy-server.herokuapp.com/https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name='+s.replace(/@/,'')+'&count=100&include_rts=true&clientsource=CUSTOM&callback=?', function(json){
 
@@ -593,27 +595,33 @@ var nav = {
 		}
 
 		var p = channel();
+		var page = next ? '&pageToken='+next : '';
 
 		if(s){
-			s = 'videos?v=2&format=1&q='+ encodeURIComponent(s).replace(/\%20/g, '+');
+			s = 'search?type=video&q='+ encodeURIComponent(s).replace(/\%20/g, '+');
 		}else if((p.id)){
-			s = 'videos/'+p.id+'/related?v=2';
+			s = 'videos?id='+p.id+'';
 		} else {
-			s = "standardfeeds/top_rated?v=2";
+			s = "videos?chart=mostPopular";
 		}
 
-		$.getJSON( 'https://gdata.youtube.com/feeds/api/' + s + '&alt=json-in-script&max-results=50&start-index='+(i||1)+'&callback=?', function(json){
+		$.getJSON( 'https://www.googleapis.com/youtube/v3/' + s + '&part=snippet&fields=items(id,snippet(title))&key=AIzaSyBOEMg6w7YpZxW48WeLb9YpNAGoiJFeMJI&maxResults=50'+page+'&callback=?', function(json){
 
-			$.each( json.feed.entry, function(i,o){
+			if ( !json || json.error ) {
+				console.error(json.error);
+				return;
+			}
+
+			$.each( json.items, function(i,o){
 				//if(typeof( json.feed.entry[x]['app$control'] ) === 'object') continue; // this video is restricted... its better not to show them i feel.
 				data.push({
-					title : o.title['$t'],
-					id :  o.id['$t'].match(/video:([^:]+)/)[1],
+					title : o.snippet.title,
+					id :  o.id.videoId,
 					image_src : ''
 				});
 
 			});
-			callback({data:data});
+			callback({data:data,next:json.nextPageToken});
 		});
 	},
 	//
