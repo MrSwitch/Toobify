@@ -91,53 +91,35 @@ var toob = {
 
 		if(!ytvideo){
 
-			if(swfobject.hasFlashPlayerVersion('10')){
+		
+			// lets try the chromeless player
+			log('Loading the HTML5 player');
 
-				log('Loading SWF');
+			// 3. This function creates an <iframe> (and YouTube player)
+			//    after the API code downloads.
+			window.onYouTubePlayerAPIReady = function() {
+				log('onYouTubePlayerAPIReady');
+				ytvideo = new YT.Player('player', {
+					height: '100%',
+					width: '100%',
+					videoId: p.id,
+					events: {
+						'onReady': function(){log('player onReady fired');},
+						'onStateChange': toob._stateChange
+					}
+				});
+			};
 
-				swfobject.embedSWF('https://www.youtube.com/v/'+ p.id +'?color1=0x000000&color2=0x000000&version=3&enablejsapi=1&playerapiid=ytplayer',
-					"player",
-					"100%",
-					"100%",
-					"9",
-					null,
-				{}, { allowScriptAccess: "always", bgcolor: "#cccccc" }, { id: "fplayer" });
-
-				ytvideo = document.getElementById('fplayer');
-
+			// 2. This code loads the IFrame Player API code asynchronously.
+			if(!document.getElementById('yt_player_api')){
+				var tag = document.createElement('script');
+				tag.src = "https://www.youtube.com/player_api";
+				tag.id = 'yt_player_api';
+				var firstScriptTag = document.getElementsByTagName('script')[0];
+				firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 			}
-			// Else have we loaded the Javascript library yet?
-			else {
-				// lets try the chromeless player
-				log('Loading the HTML5 player');
-
-				// 3. This function creates an <iframe> (and YouTube player)
-				//    after the API code downloads.
-				window.onYouTubePlayerAPIReady = function() {
-					log('onYouTubePlayerAPIReady');
-					ytvideo = new YT.Player('player', {
-						height: '100%',
-						width: '100%',
-						videoId: p.id,
-						events: {
-							'onReady': function(){log('player onReady fired');},
-							'onStateChange': toob._stateChange
-						}
-					});
-				};
-
-				// 2. This code loads the IFrame Player API code asynchronously.
-				if(!document.getElementById('yt_player_api')){
-					var tag = document.createElement('script');
-					tag.src = "https://www.youtube.com/player_api";
-					tag.id = 'yt_player_api';
-					var firstScriptTag = document.getElementsByTagName('script')[0];
-					firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-				}
-				else{
-					window.onYouTubePlayerAPIReady();
-				}
-
+			else{
+				window.onYouTubePlayerAPIReady();
 			}
 
 		} else if( p.id !== ytvideo.getVideoUrl().match(/[\?\&]v=([^&]+)/)[1] ){
